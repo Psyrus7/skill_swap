@@ -10,21 +10,25 @@
         android:roundIcon="@drawable/skillswaplogo"
         android:supportsRtl="true"
         android:theme="@style/Theme.SkillSwap">
-        <activity
-            android:name=".view.compose.HomeScreen"
-            android:exported="false"
-            android:label="@string/title_activity_home_screen"
-            android:theme="@style/Theme.SkillSwap" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.SkillSwap">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--        <activity-->
+<!--            android:name=".view.compose.HomeScreen"-->
+<!--            android:exported="true"-->
+<!--            android:label="title_activity_home_screen"-->
+<!--            android:theme="@style/Theme.SkillSwap"-->
+<!--            >-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
+<!--        </activity>-->
+
+        <activity
+            android:name=".view.compose.ProfilePage"
+            android:exported="true"
+            android:label="title_activity_profile_page"
+            android:theme="@style/Theme.SkillSwap" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
         </activity>
     </application>
 
