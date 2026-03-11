@@ -1,6 +1,4 @@
-
 package com.example.skillswap.view.compose
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,22 +8,26 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
@@ -37,10 +39,11 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -52,7 +55,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -93,6 +96,11 @@ fun SkillSwapHomeScreen(
 ) {
     val searchText by viewModel.searchText.collectAsState()
     val users = viewModel.filteredUsers()
+
+    val popularSkills = listOf(
+        "Kotlin", "Java", "UI/UX", "Photography", "Cooking", "Public Speaking"
+    )
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = BeigeBackground,
@@ -100,31 +108,54 @@ fun SkillSwapHomeScreen(
             Column {
                 CenterAlignedTopAppBar(
                     title = {
-                        Text(
-                            text = "Skill Swap",
-                            color = TitleText,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "Skill Swap",
+                                color = TitleText,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            Text(
+                                text = "Learn • Teach • Connect",
+                                color = TextHint,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
                     },
                     navigationIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.NotificationsNone,
-                            contentDescription = "Notifications",
-                            tint = TextPrimary,
+                        Box(
                             modifier = Modifier
-                                .padding(8.dp)
-                                .clickable { }
-                        )
+                                .padding(start = 12.dp)
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(Color.White)
+                                .border(1.dp, DividerBeige, CircleShape)
+                                .clickable { },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.NotificationsNone,
+                                contentDescription = "Notifications",
+                                tint = TextPrimary
+                            )
+                        }
                     },
                     actions = {
-                        Icon(
-                            imageVector = Icons.Outlined.Person,
-                            contentDescription = "Profile",
-                            tint = TextPrimary,
+                        Box(
                             modifier = Modifier
-                                .padding(8.dp)
-                                .clickable { }
-                        )
+                                .padding(end = 12.dp)
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(Color.White)
+                                .border(1.dp, DividerBeige, CircleShape)
+                                .clickable { },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Person,
+                                contentDescription = "Profile",
+                                tint = TextPrimary
+                            )
+                        }
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = CreamSurface
@@ -134,258 +165,311 @@ fun SkillSwapHomeScreen(
             }
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(BeigeBackground)
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-            OutlinedTextField(
-                value = searchText,
-                onValueChange = { viewModel.onSearchTextChange(it) },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = {
-                    Text(
-                        text = "Search for a skill to learn...",
-                        color = TextHint
-                    )
-                },
-                shape = RoundedCornerShape(16.dp),
-                singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = SearchBackground,
-                    unfocusedContainerColor = SearchBackground,
-                    focusedBorderColor = SearchBorder,
-                    unfocusedBorderColor = SearchBorder,
-                    focusedTextColor = TextPrimary,
-                    unfocusedTextColor = TextPrimary,
-                    cursorColor = BrownPrimary
-                )
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = { },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(54.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = BrownPrimary,
-                    contentColor = Color.White
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = "Search"
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Search",
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                items(users) { user ->
-                    SkillUserCard(user)
-                }
-            }
-        }
-    }
-}
-@Composable
-
-fun SkillUserCard(user: SkillUser) {
-
-    Card(
-
-        modifier = Modifier
-
-            .fillMaxWidth()
-
-            .clickable { },
-
-        shape = RoundedCornerShape(24.dp),
-
-        colors = CardDefaults.cardColors(
-
-            containerColor = SoftBeigeCard
-
-        ),
-
-        border = BorderStroke(2.dp, TextPrimary)
-
-    ) {
-
-        Row(
-
-            modifier = Modifier
-
-                .fillMaxWidth()
-
-                .padding(16.dp),
-
-            verticalAlignment = Alignment.CenterVertically
-
+                .padding(innerPadding),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            Box(
-
-                modifier = Modifier
-
-                    .size(84.dp)
-
-                    .clip(CircleShape)
-
-                    .border(3.dp, Color(0xFFE6B1D0), CircleShape)
-
-                    .clickable{ },
-
-                contentAlignment = Alignment.Center
-
-            ) {
-
-                Image(
-
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-
-                    contentDescription = user.name,
-
-                    modifier = Modifier
-
-                        .size(78.dp)
-
-                        .clip(CircleShape),
-
-                    contentScale = ContentScale.Crop
-
-                )
-
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column(
-
-                modifier = Modifier.weight(1f)
-
-            ) {
-
-                Text(
-
-                    text = user.name,
-
-                    color = CardTitle,
-
-                    fontWeight = FontWeight.Bold
-
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-
-                    text = "Teaches: ${user.teaches.joinToString()}",
-
-                    color = TextPrimary
-
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row {
-
-                    repeat(5) { index ->
-
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = CardDefaults.cardColors(containerColor = CreamSurface),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    border = BorderStroke(1.dp, DividerBeige)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-
-                            text = if (index < user.rating.toInt()) "★" else "☆",
-
-                            color = StarRatingColor
-
+                            text = "Discover new skills",
+                            color = CardTitle,
+                            style = MaterialTheme.typography.titleMedium
                         )
 
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Text(
+                            text = "Search for mentors, friends, and skills you want to learn",
+                            color = TextHint,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        OutlinedTextField(
+                            value = searchText,
+                            onValueChange = { viewModel.onSearchTextChange(it) },
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = {
+                                Text(
+                                    text = "Search for a skill to learn...",
+                                    color = TextHint,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Search,
+                                    contentDescription = "Search",
+                                    tint = BrownPrimary
+                                )
+                            },
+                            shape = RoundedCornerShape(18.dp),
+                            singleLine = true,
+                            textStyle = MaterialTheme.typography.bodyMedium,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = SearchBackground,
+                                unfocusedContainerColor = SearchBackground,
+                                focusedBorderColor = SearchBorder,
+                                unfocusedBorderColor = SearchBorder,
+                                focusedTextColor = TextPrimary,
+                                unfocusedTextColor = TextPrimary,
+                                cursorColor = BrownPrimary
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        Button(
+                            onClick = { },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = BrownPrimary,
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Search,
+                                contentDescription = "Search"
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Find Skill Partners",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        Row(
+                            modifier = Modifier.horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            popularSkills.forEach { skill ->
+                                Surface(
+                                    shape = RoundedCornerShape(50.dp),
+                                    color = Color.White,
+                                    border = BorderStroke(1.dp, SearchBorder)
+                                ) {
+                                    Text(
+                                        text = skill,
+                                        color = TextPrimary,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        modifier = Modifier.padding(
+                                            horizontal = 14.dp,
+                                            vertical = 8.dp
+                                        )
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(4.dp))
+                            }
+                        }
                     }
-
                 }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-
-                    text = "Want to learn: ${user.wantsToLearn.joinToString()}",
-
-                    color = TextPrimary
-
-                )
-
             }
 
-            Spacer(modifier = Modifier.width(10.dp))
+            item {
+                Column {
+                    Text(
+                        text = "Recommended mentors",
+                        color = CardTitle,
+                        style = MaterialTheme.typography.titleMedium
+                    )
 
-            Button(
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                onClick = { },
-
-                shape = RoundedCornerShape(30.dp),
-
-                colors = ButtonDefaults.buttonColors(
-
-                    containerColor = Color.Black,
-
-                    contentColor = Color.White
-
-                )
-
-            ) {
-
-                Text(
-
-                    text = "Connect",
-
-                    fontWeight = FontWeight.SemiBold
-
-                )
-
+                    Text(
+                        text = "People who can help you grow your skills",
+                        color = TextHint,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
 
+            items(users) { user ->
+                SkillUserCard(user)
+            }
         }
-
     }
-
 }
 
+@Composable
+fun SkillUserCard(user: SkillUser) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { },
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+        colors = CardDefaults.cardColors(containerColor = SoftBeigeCard),
+        border = BorderStroke(1.dp, DividerBeige)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier.size(78.dp),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                        contentDescription = user.name,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape)
+                            .border(2.dp, Color.White, CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
 
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF4CAF50))
+                            .border(2.dp, Color.White, CircleShape)
+                    )
+                }
 
+                Spacer(modifier = Modifier.width(14.dp))
 
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = user.name,
+                        color = CardTitle,
+                        style = MaterialTheme.typography.titleMedium
+                    )
 
+                    Spacer(modifier = Modifier.height(4.dp))
 
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = "Rating",
+                            tint = StarRatingColor,
+                            modifier = Modifier.size(16.dp)
+                        )
 
+                        Spacer(modifier = Modifier.width(4.dp))
 
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    SkillSwapTheme {
-//
-//    }
-//}
+                        Text(
+                            text = "${user.rating} rating",
+                            color = TextPrimary,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
 
+                    Spacer(modifier = Modifier.height(6.dp))
 
+                    Text(
+                        text = "Ready to teach and collaborate",
+                        color = TextHint,
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
 
+                Button(
+                    onClick = { },
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BrownPrimary,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Connect",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Teaches",
+                color = CardTitle,
+                style = MaterialTheme.typography.titleSmall
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                user.teaches.forEach { skill ->
+                    Surface(
+                        shape = RoundedCornerShape(50.dp),
+                        color = Color.White,
+                        border = BorderStroke(1.dp, DividerBeige)
+                    ) {
+                        Text(
+                            text = skill,
+                            color = TextPrimary,
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(4.dp))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = "Wants to learn",
+                color = CardTitle,
+                style = MaterialTheme.typography.titleSmall
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                user.wantsToLearn.forEach { skill ->
+                    Surface(
+                        shape = RoundedCornerShape(50.dp),
+                        color = Color(0xFFFFF8F0),
+                        border = BorderStroke(1.dp, SearchBorder)
+                    ) {
+                        Text(
+                            text = skill,
+                            color = TextPrimary,
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(4.dp))
+                }
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true, showSystemUi = true)
-
 @Composable
-
 fun SkillSwapHomeScreenPreview() {
-
     SkillSwapTheme {
-
         SkillSwapHomeScreen()
-
     }
-
 }
