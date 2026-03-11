@@ -11,6 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SkillSwap">
         <activity
+            android:name=".view.compose.MatchedScreenCard"
+            android:exported="true"
+            android:label="@string/title_activity_matched_screen_card"
+            android:theme="@style/Theme.SkillSwap" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"

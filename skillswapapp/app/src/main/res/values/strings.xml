@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SkillSwap</string>
+    <string name="title_activity_skill_matched_card">SkillMatchedCard</string>
+    <string name="title_activity_matched_screen_card">MatchedScreenCard</string>
 </resources>
