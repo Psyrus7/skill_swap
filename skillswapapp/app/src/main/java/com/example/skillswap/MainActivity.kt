@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             SkillSwapTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "From Team Epsilon",
+                        name = "From Team Epsilon ,it's day 1",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
