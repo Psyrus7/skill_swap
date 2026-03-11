@@ -17,14 +17,15 @@
             android:theme="@style/Theme.SkillSwap" />
         <activity
             android:name=".MainActivity"
+            android:name=".view.compose.ProfilePage"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.SkillSwap">
+            android:label="title_activity_profile_page"
+            android:theme="@style/Theme.SkillSwap" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
         </activity>
     </application>
 
