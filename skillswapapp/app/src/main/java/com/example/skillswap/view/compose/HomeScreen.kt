@@ -9,6 +9,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -88,13 +89,10 @@ class HomeScreen : ComponentActivity() {
 @Composable
 fun SkillSwapHomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: SkillSwapViewModel = viewModel(),
-    onProfileClick: () -> Unit = {},
-    onConnectClick: (SkillUser) -> Unit = {}
+    viewModel: SkillSwapViewModel = viewModel()
 ) {
     val searchText by viewModel.searchText.collectAsState()
     val users = viewModel.filteredUsers()
-
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = BeigeBackground,
@@ -109,22 +107,24 @@ fun SkillSwapHomeScreen(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = {}) {
-                            Icon(
-                                imageVector = Icons.Outlined.NotificationsNone,
-                                contentDescription = "Notifications",
-                                tint = TextPrimary
-                            )
-                        }
+                        Icon(
+                            imageVector = Icons.Outlined.NotificationsNone,
+                            contentDescription = "Notifications",
+                            tint = TextPrimary,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .clickable { }
+                        )
                     },
                     actions = {
-                        IconButton(onClick = onProfileClick) {
-                            Icon(
-                                imageVector = Icons.Outlined.Person,
-                                contentDescription = "Profile",
-                                tint = TextPrimary
-                            )
-                        }
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = "Profile",
+                            tint = TextPrimary,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .clickable { }
+                        )
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = CreamSurface
@@ -134,7 +134,6 @@ fun SkillSwapHomeScreen(
             }
         }
     ) { innerPadding ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -142,7 +141,6 @@ fun SkillSwapHomeScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { viewModel.onSearchTextChange(it) },
@@ -165,11 +163,9 @@ fun SkillSwapHomeScreen(
                     cursorColor = BrownPrimary
                 )
             )
-
             Spacer(modifier = Modifier.height(12.dp))
-
             Button(
-                onClick = {},
+                onClick = { },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(54.dp),
@@ -181,127 +177,189 @@ fun SkillSwapHomeScreen(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Search,
-                    contentDescription = "Search",
-                    tint = Color.White
+                    contentDescription = "Search"
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Search", fontWeight = FontWeight.SemiBold)
+                Text(
+                    text = "Search",
+                    fontWeight = FontWeight.SemiBold
+                )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 items(users) { user ->
-                    SkillUserCard(
-                        user = user,
-                        onConnectClick = { onConnectClick(user) }
-                    )
+                    SkillUserCard(user)
                 }
             }
         }
     }
 }
-
 @Composable
-fun SkillUserCard(
-    user: SkillUser,
-    onConnectClick: () -> Unit
-) {
+
+fun SkillUserCard(user: SkillUser) {
+
     Card(
-        modifier = Modifier.fillMaxWidth(),
+
+        modifier = Modifier
+
+            .fillMaxWidth()
+
+            .clickable { },
+
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = SoftBeigeCard),
+
+        colors = CardDefaults.cardColors(
+
+            containerColor = SoftBeigeCard
+
+        ),
+
         border = BorderStroke(2.dp, TextPrimary)
+
     ) {
+
         Row(
+
             modifier = Modifier
+
                 .fillMaxWidth()
+
                 .padding(16.dp),
+
             verticalAlignment = Alignment.CenterVertically
+
         ) {
 
             Box(
+
                 modifier = Modifier
+
                     .size(84.dp)
+
                     .clip(CircleShape)
-                    .border(3.dp, Color(0xFFE6B1D0), CircleShape),
+
+                    .border(3.dp, Color(0xFFE6B1D0), CircleShape)
+
+                    .clickable{ },
+
                 contentAlignment = Alignment.Center
+
             ) {
+
                 Image(
+
                     painter = painterResource(id = R.drawable.ic_launcher_foreground),
+
                     contentDescription = user.name,
+
                     modifier = Modifier
+
                         .size(78.dp)
+
                         .clip(CircleShape),
+
                     contentScale = ContentScale.Crop
+
                 )
+
             }
 
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(
+
                 modifier = Modifier.weight(1f)
+
             ) {
+
                 Text(
+
                     text = user.name,
+
                     color = CardTitle,
+
                     fontWeight = FontWeight.Bold
+
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
+
                     text = "Teaches: ${user.teaches.joinToString()}",
+
                     color = TextPrimary
+
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "Rating: ",
-                        color = TextPrimary
-                    )
-                    RatingStars(rating = user.rating)
+                Row {
+
+                    repeat(5) { index ->
+
+                        Text(
+
+                            text = if (index < user.rating.toInt()) "★" else "☆",
+
+                            color = StarRatingColor
+
+                        )
+
+                    }
+
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
+
                     text = "Want to learn: ${user.wantsToLearn.joinToString()}",
+
                     color = TextPrimary
+
                 )
+
             }
 
             Spacer(modifier = Modifier.width(10.dp))
 
             Button(
-                onClick = onConnectClick,
+
+                onClick = { },
+
                 shape = RoundedCornerShape(30.dp),
+
                 colors = ButtonDefaults.buttonColors(
+
                     containerColor = Color.Black,
+
                     contentColor = Color.White
+
                 )
+
             ) {
-                Text(text = "Connect", fontWeight = FontWeight.SemiBold)
+
+                Text(
+
+                    text = "Connect",
+
+                    fontWeight = FontWeight.SemiBold
+
+                )
+
             }
+
         }
+
     }
+
 }
 
-@Composable
-fun RatingStars(rating: Float) {
-    Row {
-        repeat(5) { index ->
-            Text(
-                text = if (index < rating.toInt()) "★" else "☆",
-                color = StarRatingColor
-            )
-        }
-    }
-}
+
+
 
 
 
@@ -314,123 +372,20 @@ fun RatingStars(rating: Float) {
 //
 //    }
 //}
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SkillSwapHomeScreenPreviewContent() {
-    val users = listOf(
-        SkillUser(
-            id = "1",
-            name = "Alex Thompson",
-            profileImage = "",
-            teaches = listOf("Guitar", "Music Theory"),
-            wantsToLearn = listOf("Photography", "Video Editing"),
-            rating = 5f
-        ),
-        SkillUser(
-            id = "2",
-            name = "Sophia Lee",
-            profileImage = "",
-            teaches = listOf("Spanish"),
-            wantsToLearn = listOf("Cooking"),
-            rating = 4f
-        )
-    )
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = BeigeBackground,
-        topBar = {
-            Column {
-                CenterAlignedTopAppBar(
-                    title = {
-                        Text(
-                            text = "Skill Swap",
-                            color = TitleText,
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = CreamSurface
-                    )
-                )
-            }
-        }
-    ) { innerPadding ->
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(BeigeBackground)
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-            OutlinedTextField(
-                value = "",
-                onValueChange = {},
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = {
-                    Text(
-                        text = "Search for a skill to learn...",
-                        color = TextHint
-                    )
-                },
-                shape = RoundedCornerShape(16.dp),
-                singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = SearchBackground,
-                    unfocusedContainerColor = SearchBackground,
-                    focusedBorderColor = SearchBorder,
-                    unfocusedBorderColor = SearchBorder,
-                    focusedTextColor = TextPrimary,
-                    unfocusedTextColor = TextPrimary,
-                    cursorColor = BrownPrimary
-                )
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(54.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = BrownPrimary,
-                    contentColor = Color.White
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = "Search",
-                    tint = Color.White
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Search", fontWeight = FontWeight.SemiBold)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                items(users) { user ->
-                    SkillUserCard(
-                        user = user,
-                        onConnectClick = {}
-                    )
-                }
-            }
-        }
-    }
-}
 
 
 @Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun SkillSwapHomeScreenPreview() {
-    SkillSwapTheme {
-        SkillSwapHomeScreenPreviewContent()
-    }
-}
 
+@Composable
+
+fun SkillSwapHomeScreenPreview() {
+
+    SkillSwapTheme {
+
+        SkillSwapHomeScreen()
+
+    }
+
+}
