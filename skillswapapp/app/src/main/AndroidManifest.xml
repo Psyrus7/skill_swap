@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SkillSwap">
         <activity
+            android:name=".view.compose.HomeScreen"
+            android:exported="false"
+            android:label="@string/title_activity_home_screen"
+            android:theme="@style/Theme.SkillSwap" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
