@@ -157,7 +157,7 @@ fun SkillSwapHomeScreen(
                             )
                         }
                     },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = CreamSurface
                     )
                 )
@@ -262,7 +262,7 @@ fun SkillSwapHomeScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             popularSkills.forEach { skill ->
-                                Surface(
+                                Surface(modifier= Modifier.clickable(onClick = {}),
                                     shape = RoundedCornerShape(50.dp),
                                     color = Color.White,
                                     border = BorderStroke(1.dp, SearchBorder)

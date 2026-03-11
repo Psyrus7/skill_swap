@@ -2,5 +2,7 @@
     <string name="app_name">SkillSwap</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_matched_screen_card">Matched Screen</string>
+    <string name="title_activity_message_list_screen">MessageListScreen</string>
+    <string name="title_activity_home_screen">HomeScreen</string>
 
 </resources>

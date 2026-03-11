@@ -49,6 +49,7 @@ import com.example.skillswap.R
 import com.example.skillswap.ui.theme.BeigeBackground
 import com.example.skillswap.ui.theme.CreamSurface
 import com.example.skillswap.ui.theme.SkillSwapTheme
+import com.example.skillswap.ui.theme.SoftBeigeCard
 
 class ChatScreen : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -125,7 +126,7 @@ fun MessageScreen() {
             modifier = Modifier
                 .weight(1f)
                 .padding(8.dp)
-                .background(CreamSurface)
+                .background(BeigeBackground)
         ) {
             item {
                 MessageBubble(
@@ -194,7 +195,7 @@ fun MessageBubble(text: String, time: String, isUser: Boolean) {
         Box(
             modifier = Modifier
                 .background(
-                    if (isUser) BeigeBackground else Color.White,
+                    if (isUser) SoftBeigeCard else Color.White,
                     shape = RoundedCornerShape(12.dp)
                 )
                 .padding(12.dp)
