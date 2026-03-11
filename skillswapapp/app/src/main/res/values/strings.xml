@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SkillSwap</string>
-    <string name="title_activity_chat_screen">ChatScreen</string>
-    <string name="title_activity_profile_page">ProfilePage</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_matched_screen_card">Matched Screen</string>
 
 </resources>
