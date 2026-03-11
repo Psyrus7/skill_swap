@@ -1,4 +1,5 @@
 package com.example.skillswap.view.compose
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,15 +42,20 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -262,7 +269,8 @@ fun SkillSwapHomeScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             popularSkills.forEach { skill ->
-                                Surface(modifier= Modifier.clickable(onClick = {}),
+                                Surface(
+                                    modifier = Modifier.clickable(onClick = {}),
                                     shape = RoundedCornerShape(50.dp),
                                     color = Color.White,
                                     border = BorderStroke(1.dp, SearchBorder)
@@ -309,6 +317,7 @@ fun SkillSwapHomeScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SkillUserCard(user: SkillUser) {
     Card(
@@ -385,9 +394,10 @@ fun SkillUserCard(user: SkillUser) {
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-
+                val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+                var showSheet by remember { mutableStateOf(false) }
                 Button(
-                    onClick = { },
+                    onClick = { showSheet = true},
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = BrownPrimary,
@@ -398,6 +408,25 @@ fun SkillUserCard(user: SkillUser) {
                         text = "Connect",
                         style = MaterialTheme.typography.labelLarge
                     )
+                }
+                if(showSheet){
+                    ModalBottomSheet(
+                        onDismissRequest = { showSheet = false },
+                        sheetState = sheetState
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.5f)
+                        ) {
+                            MatchedScreenCard(
+                                name = user.name,
+                                onSendRequest = { /* TODO */ },
+                                onMessage = { /* TODO */ }
+                            )
+                        }
+                    }
+
                 }
             }
 

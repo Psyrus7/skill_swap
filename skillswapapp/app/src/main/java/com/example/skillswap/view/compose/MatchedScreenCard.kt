@@ -33,6 +33,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 
 import androidx.compose.material3.MaterialTheme
 
@@ -133,9 +135,6 @@ fun MatchedScreenCard(
     Box(
 
         modifier = Modifier
-
-            .fillMaxSize()
-
             .padding(16.dp),
 
         contentAlignment = Alignment.Center
@@ -180,7 +179,7 @@ fun MatchedScreenCard(
 
                 Spacer(Modifier.height(12.dp))
 
-                Divider(color = DividerBeige)
+                HorizontalDivider(Modifier, DividerDefaults.Thickness, color = DividerBeige)
 
                 Spacer(Modifier.height(12.dp))
 
