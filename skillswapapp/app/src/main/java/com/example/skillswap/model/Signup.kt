@@ -6,5 +6,8 @@ data class Signup(
     val teachSkill: String = "",
     val learnSkill: String = "",
     val password: String = "",
-    val confirmPassword: String = ""
+    val confirmPassword: String = "",
+    val isLoading: Boolean = false,
+    val isSuccess: Boolean = false,
+    val errorMessage: String? = null
 )

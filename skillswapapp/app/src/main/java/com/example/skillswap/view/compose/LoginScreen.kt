@@ -2,6 +2,7 @@ package com.example.skillswap.view.compose
 
 
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -161,7 +162,16 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(),navController: NavContro
         )
         Spacer(modifier = Modifier.height(30.dp))
         Button(
-            onClick = { navController.navigate("homeScreen") },
+            onClick = {
+                viewModel.login()
+                if(viewModel.state.value.isSuccess){
+                    navController.navigate("homeScreen")
+                    Log.d("Login Success", "LoginScreen: ")
+                }
+                else {
+                    Log.d("Login Failed", "LoginScreen: ")
+                }
+                 },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(54.dp),
