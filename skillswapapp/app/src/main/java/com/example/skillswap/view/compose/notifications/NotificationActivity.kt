@@ -1,22 +1,33 @@
 
+
 package com.example.skillswap.view.compose.notifications
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import com.example.skillswap.ui.theme.SkillSwapTheme
 import com.example.skillswap.viewmodel.NotificationViewModel
 
-@Composable
-fun NotificationScreen(
-    viewModel: NotificationViewModel = viewModel()
-) {
-    val items by viewModel.notifications.collectAsState()
+class NotificationActivity : ComponentActivity() {
 
-    if (items.isEmpty()) {
-        EmptyNotificationsScreen()
-    } else {
-        NotificationsListScreen(items = items)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContent {
+
+            SkillSwapTheme {
+
+                val navController = rememberNavController()
+                val viewModel: NotificationViewModel = viewModel()
+
+                NotificationScreen(
+                    navController = navController,
+                    viewModel = viewModel
+                )
+            }
+        }
     }
 }
 

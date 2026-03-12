@@ -1,6 +1,13 @@
+
+
 @file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.skillswap.view.compose
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -18,13 +25,41 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,22 +74,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.skillswap.R
 import com.example.skillswap.ui.theme.BrownDark
 import com.example.skillswap.ui.theme.SkillTagBackground
 import com.example.skillswap.view.compose.ui.theme.SkillswapappTheme
 import com.example.skillswap.viewmodel.ProfileViewModel
-// imports at the top of Settings.kt
-import android.app.Activity
-import android.content.Intent
-import android.content.Context
-import android.content.ContextWrapper
 
-import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.compose.rememberNavController
-
-
-/* reuse your color tokens */
 private val PageBeige = Color(0xFFF2E7DE)
 private val CardWhite = Color(0xFFFFFFFF)
 private val LabelGray = Color(0xFF6B7280)
@@ -68,25 +95,25 @@ class Settings : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SkillswapappTheme {
-                var navController= rememberNavController()
+                val navController = rememberNavController()
                 SettingsScreen(
-                    onBack = {  }
+                    navController = navController,
+                    onBack = { finish() }
                 )
             }
         }
     }
 }
 
-/* -------------------- Composable Screen -------------------- */
 @Composable
 fun SettingsScreen(
+    navController: NavController,
     viewModel: ProfileViewModel = viewModel(),
     onBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    // Local editable state (pre-filled from ViewModel)
     var name by remember(state.name) { mutableStateOf(TextFieldValue(state.name.orEmpty())) }
     var canTeachText by remember(state.canTeach) {
         mutableStateOf(TextFieldValue(state.canTeach?.joinToString(", ") ?: ""))
@@ -96,7 +123,6 @@ fun SettingsScreen(
     }
     var photoUriStr by remember(state.photoUri) { mutableStateOf(state.photoUri) }
 
-    // Photo picker launcher
     val photoPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
@@ -130,6 +156,9 @@ fun SettingsScreen(
                     containerColor = SkillTagBackground
                 )
             )
+        },
+        bottomBar = {
+            SkillSwapBottomBar(navController = navController)
         }
     ) { inner ->
         Column(
@@ -155,7 +184,6 @@ fun SettingsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    /* --- Avatar picker (circle) --- */
                     AvatarEditor(
                         photoUri = photoUriStr,
                         onChangePhoto = {
@@ -167,7 +195,6 @@ fun SettingsScreen(
 
                     Spacer(Modifier.height(24.dp))
 
-                    /* --- Name --- */
                     Labeled(label = "Name")
                     OutlinedTextField(
                         value = name,
@@ -179,7 +206,6 @@ fun SettingsScreen(
 
                     Spacer(Modifier.height(16.dp))
 
-                    /* --- Skills I Can Teach (comma-separated) --- */
                     Labeled(label = "Skills I Can Teach")
                     OutlinedTextField(
                         value = canTeachText,
@@ -191,7 +217,6 @@ fun SettingsScreen(
 
                     Spacer(Modifier.height(16.dp))
 
-                    /* --- Skills I Want to Learn (comma-separated) --- */
                     Labeled(label = "Skills I Want to Learn")
                     OutlinedTextField(
                         value = wantToLearnText,
@@ -203,7 +228,6 @@ fun SettingsScreen(
 
                     Spacer(Modifier.height(24.dp))
 
-                    /* --- Buttons --- */
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -234,7 +258,6 @@ fun SettingsScreen(
                                     .map { it.trim() }
                                     .filter { it.isNotEmpty() }
 
-                                // Update VM in Settings (optional but fine)
                                 viewModel.updateProfile(
                                     name = name.text.ifBlank { null },
                                     canTeach = canTeachList,
@@ -242,7 +265,6 @@ fun SettingsScreen(
                                     photoUri = photoUriStr
                                 )
 
-                                // Return result to the caller (ProfilePage) and finish
                                 val activity = context.findActivity()
                                 val result = Intent().apply {
                                     putExtra("name", name.text.ifBlank { null })
@@ -254,20 +276,22 @@ fun SettingsScreen(
                                 activity?.finish()
                             },
                             shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.weight(1f).height(44.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = BrownDark, contentColor = Color.White)
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(44.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = BrownDark,
+                                contentColor = Color.White
+                            )
                         ) {
                             Text("Save", fontWeight = FontWeight.SemiBold)
                         }
-
                     }
                 }
             }
         }
     }
 }
-
-/* -------------------- Small UI Helpers -------------------- */
 
 @Composable
 private fun Labeled(label: String) {
@@ -312,7 +336,7 @@ private fun AvatarEditor(
                 .clip(CircleShape)
                 .background(Color.Transparent)
                 .border(BorderStroke(3.dp, RingLavender), CircleShape)
-                .clickable { onChangePhoto() }              // tap to change
+                .clickable { onChangePhoto() }
         ) {
             if (bitmap != null) {
                 Image(
@@ -357,12 +381,14 @@ fun Context.findActivity(): Activity? {
     return null
 }
 
-
-
 @Preview(showBackground = true, backgroundColor = 0xFFF2E7DE)
 @Composable
 private fun SettingsPreview() {
+    val navController = rememberNavController()
     SkillswapappTheme {
-        SettingsScreen(viewModel() , onBack = {})
+        SettingsScreen(
+            navController = navController,
+            onBack = {}
+        )
     }
 }

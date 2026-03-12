@@ -1,3 +1,6 @@
+
+
+
 package com.example.skillswap
 
 import android.annotation.SuppressLint
@@ -7,20 +10,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.skillswap.model.NotificationItem
 import com.example.skillswap.ui.theme.SkillSwapTheme
 import com.example.skillswap.view.compose.LoginScreen
 import com.example.skillswap.view.compose.MatchedScreenCard
-import com.example.skillswap.view.compose.MessageListScreen
 import com.example.skillswap.view.compose.MessageScreen
 import com.example.skillswap.view.compose.MessagesListScreen
 import com.example.skillswap.view.compose.ProfileScreen
@@ -28,10 +27,11 @@ import com.example.skillswap.view.compose.SettingsScreen
 import com.example.skillswap.view.compose.SignupAndLoginScreen
 import com.example.skillswap.view.compose.SignupScreen
 import com.example.skillswap.view.compose.SkillSwapHomeScreen
+import com.example.skillswap.view.compose.notifications.EmptyNotificationsScreen
 import com.example.skillswap.view.compose.notifications.NotificationsListScreen
+import com.example.skillswap.view.compose.notifications.sampleNotifications
 import com.example.skillswap.viewmodel.HomeScreenViewModel
 import com.example.skillswap.viewmodel.LoginViewModel
-import com.example.skillswap.viewmodel.MessagesViewModel
 import com.example.skillswap.viewmodel.SignupViewModel
 
 class MainActivity : ComponentActivity() {
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SkillSwapTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {  innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) {
                     AppNavigation()
                 }
             }
@@ -50,88 +50,92 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigation(){
-    var navController= rememberNavController()
+fun AppNavigation() {
+    val navController = rememberNavController()
 
-    NavHost(navController = navController,
+    NavHost(
+        navController = navController,
         startDestination = "signupAndLoginScreen"
-        ){
-        composable("signupAndLoginScreen"){
-         SignupAndLoginScreen(navController)
+    ) {
+        composable("signupAndLoginScreen") {
+            SignupAndLoginScreen(navController)
         }
-        composable("signupScreen"){
+
+        composable("signupScreen") {
             val viewModel: SignupViewModel = viewModel()
-            SignupScreen(viewModel,navController)
-
+            SignupScreen(viewModel, navController)
         }
-        composable("loginScreen"){
+
+        composable("loginScreen") {
             val viewModel: LoginViewModel = viewModel()
-            LoginScreen(viewModel,navController)
+            LoginScreen(viewModel, navController)
         }
 
-        composable("homeScreen"){
+        composable("homeScreen") {
             val viewModel: HomeScreenViewModel = viewModel()
             SkillSwapHomeScreen(
                 modifier = Modifier,
                 viewModel = viewModel,
                 navController = navController
             )
-
         }
 
-
-        composable("messageListScreen"){
-            MessagesListScreen()
-        }
-        composable("chatScreen"){
-            MessageScreen()
+        composable("messageListScreen") {
+            MessagesListScreen(navController = navController)
         }
 
-//        composable("messageScreenCard"){
-//            MessagesListScreen()
-//
-//        }
-        composable("matchedScreenCard"){
-            MatchedScreenCard(navController, "DFAS",
-
-            onSendRequest={},
-
-            onMessage={
-
-
-        })
-
+        composable("chatScreen") {
+            MessageScreen(navController = navController)
         }
 
-        composable("profileScreen"){
-            ProfileScreen(
-                onBack = {},
-                onEdit = {}
+        composable("matchedScreenCard") {
+            MatchedScreenCard(
+                navController = navController,
+                name = "DFAS",
+                onSendRequest = {},
+                onMessage = {
+                    navController.navigate("chatScreen")
+                }
             )
         }
-        composable("notificationScreen"){
-//            var item=mutableListOf<NotificationItem>()
-//            NotificationListScreen(item)
+
+        composable("profileScreen") {
+            ProfileScreen(
+                navController = navController,
+                onBack = { navController.popBackStack() },
+                onEdit = { navController.navigate("setting") }
+            )
         }
-        composable("setting"){
-            SettingsScreen(onBack =  {})
+
+        composable("notificationScreen") {
+            val items = sampleNotifications()
+
+            if (items.isEmpty()) {
+                EmptyNotificationsScreen(
+                    navController = navController
+                )
+            } else {
+                NotificationsListScreen(
+                    navController = navController,
+                    items = items
+                )
+            }
+        }
+
+
+        composable("setting") {
+            SettingsScreen(
+                navController = navController,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
-
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     SkillSwapTheme {
-        Greeting("Android")
+        AppNavigation()
     }
 }

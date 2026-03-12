@@ -29,9 +29,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.ChatBubbleOutline
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.NotificationsNone
+
 
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Search
@@ -45,9 +43,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
+
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -65,10 +61,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -151,7 +145,7 @@ fun SkillSwapHomeScreen(
             }
         },
         bottomBar = {
-            SkillSwapBottomBar(viewModel,navController)
+            SkillSwapBottomBar(navController)
         }
 
     ) { innerPadding ->
@@ -298,61 +292,7 @@ fun SkillSwapHomeScreen(
         }
     }
 }
-@Composable
-fun SkillSwapBottomBar(
-    viewModel: HomeScreenViewModel = viewModel(),
-    navController: NavController
-) {
-    val selectedIndex by viewModel.selectedNavIndex.collectAsState()
-    val navBarList = listOf(
-        "homeScreen",
-        "messageListScreen",
-        "notificationScreen",
-        "profileScreen"
-    )
-    val navItems: List<Pair<String, ImageVector>> = listOf(
-        "Home" to Icons.Outlined.Home,
-        "Chat" to Icons.Outlined.ChatBubbleOutline,
-        "Notifications" to Icons.Outlined.NotificationsNone,
-        "Profile" to Icons.Outlined.AccountCircle
-    )
-    NavigationBar(
-        containerColor = CreamSurface,
-        tonalElevation = 10.dp
-    ) {
-        navItems.forEachIndexed { index, item ->
-            NavigationBarItem(
-                selected = selectedIndex == index,
-                onClick = {
-                    viewModel.onNavItemSelected(index)
-                    navController.navigate(navBarList[index]) {
-                        launchSingleTop = true
-                    }
-                },
-                icon = {
-                    Icon(
-                        imageVector = item.second,
-                        contentDescription = item.first
-                    )
-                },
-                label = {
-                    Text(
-                        text = item.first,
-                        fontFamily = DmSans,
-                        fontWeight = FontWeight.Medium
-                    )
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = BrownPrimary,
-                    selectedTextColor = BrownPrimary,
-                    indicatorColor = SkillTagBackground,
-                    unselectedIconColor = TextHint,
-                    unselectedTextColor = TextHint
-                )
-            )
-        }
-    }
-}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

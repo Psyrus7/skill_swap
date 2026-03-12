@@ -1,15 +1,15 @@
+
 package com.example.skillswap.view.compose.notifications
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.example.skillswap.model.NotificationItem
 import com.example.skillswap.model.NotificationSection
 import com.example.skillswap.ui.theme.SkillSwapTheme
 
-
-
 fun sampleNotifications(): List<NotificationItem> = listOf(
-    // TODAY
+
     NotificationItem(
         id = "n1",
         title = "Profile set: You know",
@@ -19,6 +19,7 @@ fun sampleNotifications(): List<NotificationItem> = listOf(
         highlightText = "Guitar",
         section = NotificationSection.Today
     ),
+
     NotificationItem(
         id = "n2",
         title = "New match found for",
@@ -28,6 +29,7 @@ fun sampleNotifications(): List<NotificationItem> = listOf(
         highlightText = "Guitar ↔ Coding",
         section = NotificationSection.Today
     ),
+
     NotificationItem(
         id = "n3",
         title = "Swap request sent to",
@@ -37,6 +39,7 @@ fun sampleNotifications(): List<NotificationItem> = listOf(
         highlightText = "Rahul (Coding)",
         section = NotificationSection.Today
     ),
+
     NotificationItem(
         id = "n4",
         title = "Swap request accepted by",
@@ -46,6 +49,7 @@ fun sampleNotifications(): List<NotificationItem> = listOf(
         highlightText = "Anu (Coding)",
         section = NotificationSection.Today
     ),
+
     NotificationItem(
         id = "n5",
         title = "New chat message from",
@@ -55,7 +59,7 @@ fun sampleNotifications(): List<NotificationItem> = listOf(
         highlightText = "Karan",
         section = NotificationSection.Today
     ),
-    // YESTERDAY
+
     NotificationItem(
         id = "n6",
         title = "Reminder:",
@@ -65,6 +69,7 @@ fun sampleNotifications(): List<NotificationItem> = listOf(
         highlightText = "Session at 7:30 PM",
         section = NotificationSection.Yesterday
     ),
+
     NotificationItem(
         id = "n7",
         title = "Feedback pending for",
@@ -74,7 +79,7 @@ fun sampleNotifications(): List<NotificationItem> = listOf(
         highlightText = "Riya (Coding)",
         section = NotificationSection.Yesterday
     ),
-    // THIS WEEKEND
+
     NotificationItem(
         id = "n8",
         title = "Weekend spotlight:",
@@ -83,55 +88,28 @@ fun sampleNotifications(): List<NotificationItem> = listOf(
         leadingEmoji = "🎯",
         highlightText = "Guitar mentors",
         section = NotificationSection.ThisWeekend
-    ),
-    NotificationItem(
-        id = "n9",
-        title = "Community tip:",
-        body = "Share a 30‑sec riff to attract Coding learners who love music.",
-        time = "Sat • 10:05 AM",
-        leadingEmoji = "🎥",
-        highlightText = "Video intro",
-        section = NotificationSection.ThisWeekend
-    ),
-    NotificationItem(
-        id = "n10",
-        title = "Community tip:",
-        body = "Share a 30‑sec riff to attract Coding learners who love music.",
-        time = "Sat • 10:05 AM",
-        leadingEmoji = "🎥",
-        highlightText = "Video intro",
-        section = NotificationSection.ThisWeekend
-    ),
-    NotificationItem(
-        id = "n11",
-        title = "Community tip:",
-        body = "Share a 30‑sec riff to attract Coding learners who love music.",
-        time = "Sat • 10:05 AM",
-        leadingEmoji = "🎥",
-        highlightText = "Video intro",
-        section = NotificationSection.ThisWeekend
-    ),
-    NotificationItem(
-        id = "n12",
-        title = "Community tip:",
-        body = "Share a 30‑sec riff to attract Coding learners who love music.",
-        time = "Sat • 10:05 AM",
-        leadingEmoji = "🎥",
-        highlightText = "Video intro",
-        section = NotificationSection.ThisWeekend
     )
-
-
 )
 
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSkillSwapEmpty() {
-    SkillSwapTheme { EmptyNotificationsScreen() }
+    val navController = rememberNavController()
+
+    SkillSwapTheme {
+        EmptyNotificationsScreen(navController = navController)
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSkillSwapList() {
-    SkillSwapTheme { NotificationsListScreen(items = sampleNotifications()) }
+    val navController = rememberNavController()
+
+    SkillSwapTheme {
+        NotificationsListScreen(
+            navController = navController,
+            items = sampleNotifications()
+        )
+    }
 }

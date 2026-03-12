@@ -65,7 +65,7 @@ class HomeScreenViewModel : ViewModel() {
     }
 
 
-    // NAVIGATION ITEM CLICK
+//     NAVIGATION ITEM CLICK
     fun onNavItemSelected(index: Int) {
         _selectedNavIndex.value = index
     }

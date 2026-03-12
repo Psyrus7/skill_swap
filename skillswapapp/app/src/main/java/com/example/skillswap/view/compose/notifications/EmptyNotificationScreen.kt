@@ -1,3 +1,6 @@
+
+
+
 package com.example.skillswap.view.compose.notifications
 
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +21,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,10 +37,14 @@ import com.example.skillswap.ui.theme.SkillSwapTheme
 import com.example.skillswap.ui.theme.TextHint
 import com.example.skillswap.ui.theme.TextPrimary
 import com.example.skillswap.ui.theme.TextSecondary
+import com.example.skillswap.view.compose.SkillSwapBottomBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmptyNotificationsScreen(onExploreClick: () -> Unit = {}) {
+fun EmptyNotificationsScreen(
+    navController: NavController,
+    onExploreClick: () -> Unit = {}
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -46,8 +55,14 @@ fun EmptyNotificationsScreen(onExploreClick: () -> Unit = {}) {
                 )
             )
         },
+
+        bottomBar = {
+            SkillSwapBottomBar(navController = navController)
+        },
+
         containerColor = BeigeBackground
     ) { padding ->
+
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -56,6 +71,7 @@ fun EmptyNotificationsScreen(onExploreClick: () -> Unit = {}) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+
             Surface(
                 modifier = Modifier.size(140.dp),
                 color = CreamSurface,
@@ -98,5 +114,8 @@ fun EmptyNotificationsScreen(onExploreClick: () -> Unit = {}) {
 @Preview(showBackground = true)
 @Composable
 private fun PreviewEmpty() {
-    SkillSwapTheme { EmptyNotificationsScreen() }
+    val navController = rememberNavController()
+    SkillSwapTheme {
+        EmptyNotificationsScreen(navController)
+    }
 }

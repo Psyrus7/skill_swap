@@ -1,3 +1,4 @@
+
 package com.example.skillswap.view.compose
 
 import android.annotation.SuppressLint
@@ -46,6 +47,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.skillswap.R
 import com.example.skillswap.ui.theme.BeigeBackground
 import com.example.skillswap.ui.theme.SkillSwapTheme
@@ -59,9 +62,8 @@ class ChatScreen : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SkillSwapTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {  innerPadding ->
-                    MessageScreen()
-                }
+                val navController = rememberNavController()
+                MessageScreen(navController = navController)
             }
         }
     }
@@ -69,92 +71,104 @@ class ChatScreen : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MessageScreen(viewModel: ChatViewModel=viewModel()) {
+fun MessageScreen(
+    navController: NavController,
+    viewModel: ChatViewModel = viewModel()
+) {
     val messages by viewModel.messages.collectAsState()
-    Column(
-    ) {
-        TopAppBar(
-            title = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    TextButton(onClick = {}) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                            contentDescription = "Back Button"
-                        )
-                    }
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher_background),
-                        contentDescription = "Profile Picture",
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .clip(CircleShape)
-                            .size(40.dp)
-                    )
-                    Column(
-                        modifier = Modifier.padding(start = 12.dp)
+
+    Scaffold(
+        containerColor = BeigeBackground,
+        bottomBar = {
+            SkillSwapBottomBar(navController = navController)
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            TopAppBar(
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Jack king", fontWeight = FontWeight.Bold,style = MaterialTheme.typography.titleLarge)
-                        Text("Online", style = MaterialTheme.typography.bodySmall)
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                    TextButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(R.drawable.videocallicon),
-                            contentDescription = "Video Call Icon"
+                        TextButton(onClick = { }) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                contentDescription = "Back Button"
+                            )
+                        }
+                        Image(
+                            painter = painterResource(R.drawable.ic_launcher_background),
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .clip(CircleShape)
+                                .size(40.dp)
                         )
-                    }
+                        Column(
+                            modifier = Modifier.padding(start = 12.dp)
+                        ) {
+                            Text(
+                                "Jack king",
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            Text("Online", style = MaterialTheme.typography.bodySmall)
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        TextButton(onClick = {}) {
+                            Icon(
+                                painter = painterResource(R.drawable.videocallicon),
+                                contentDescription = "Video Call Icon"
+                            )
+                        }
 
-                    Spacer(modifier = Modifier.width(16.dp))
-                    TextButton(onClick = {}) {
-                        Icon(
-                            Icons.Outlined.Call,
-                            contentDescription = "Call Icon",
-                            modifier = Modifier.absolutePadding(right = 16.dp),
-                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        TextButton(onClick = {}) {
+                            Icon(
+                                Icons.Outlined.Call,
+                                contentDescription = "Call Icon",
+                                modifier = Modifier.absolutePadding(right = 16.dp),
+                            )
+                        }
                     }
+                }
+            )
 
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(8.dp)
+                    .background(BeigeBackground)
+            ) {
+                items(messages) { message ->
+                    MessageBubble(
+                        text = message.text,
+                        time = message.time,
+                        isUser = message.isUser
+                    )
                 }
             }
-        )
 
-
-        // Messages
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .padding(8.dp)
-                .background(BeigeBackground)
-        ) {
-            items(messages){message ->
-                MessageBubble(
-                    text = message.text,
-                    time = message.time,
-                    isUser = message.isUser
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextField(
+                    value = "",
+                    onValueChange = {},
+                    placeholder = { Text("Type a message...") },
+                    modifier = Modifier.weight(1f)
                 )
-
-            }
-
-        }
-
-        // Input bar
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White)
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextField(
-                value = "",
-                onValueChange = {},
-                placeholder = { Text("Type a message...") },
-                modifier = Modifier.weight(1f)
-            )
-            IconButton(onClick = { /* send action */ }) {
-                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
+                IconButton(onClick = { }) {
+                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
+                }
             }
         }
     }
@@ -164,7 +178,9 @@ fun MessageScreen(viewModel: ChatViewModel=viewModel()) {
 fun MessageBubble(text: String, time: String, isUser: Boolean) {
     Column(
         horizontalAlignment = if (isUser) Alignment.End else Alignment.Start,
-        modifier = Modifier.fillMaxWidth().padding(8.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
     ) {
         Box(
             modifier = Modifier
@@ -174,7 +190,7 @@ fun MessageBubble(text: String, time: String, isUser: Boolean) {
                 )
                 .padding(12.dp)
         ) {
-            Text(text,style = MaterialTheme.typography.bodyMedium)
+            Text(text, style = MaterialTheme.typography.bodyMedium)
         }
         Text(
             text = time,
@@ -184,12 +200,11 @@ fun MessageBubble(text: String, time: String, isUser: Boolean) {
     }
 }
 
-
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
+    val navController = rememberNavController()
     SkillSwapTheme {
-        MessageScreen()
+        MessageScreen(navController = navController)
     }
 }
