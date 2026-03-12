@@ -28,7 +28,7 @@ import com.example.skillswap.view.compose.SettingsScreen
 import com.example.skillswap.view.compose.SignupAndLoginScreen
 import com.example.skillswap.view.compose.SignupScreen
 import com.example.skillswap.view.compose.SkillSwapHomeScreen
-import com.example.skillswap.view.compose.notifications.NotificationListScreen
+import com.example.skillswap.view.compose.notifications.NotificationsListScreen
 import com.example.skillswap.viewmodel.HomeScreenViewModel
 import com.example.skillswap.viewmodel.LoginViewModel
 import com.example.skillswap.viewmodel.MessagesViewModel

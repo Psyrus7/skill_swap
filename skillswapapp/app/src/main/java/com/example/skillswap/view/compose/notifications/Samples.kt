@@ -133,5 +133,5 @@ private fun PreviewSkillSwapEmpty() {
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSkillSwapList() {
-    SkillSwapTheme { NotificationListScreen(items = sampleNotifications()) }
+    SkillSwapTheme { NotificationsListScreen(items = sampleNotifications()) }
 }
