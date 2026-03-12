@@ -30,13 +30,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skillswap.R
 import com.example.skillswap.model.Conversation
 import com.example.skillswap.ui.theme.BeigeBackground
@@ -62,7 +61,7 @@ class MessageListScreen : ComponentActivity() {
         setContent {
             SkillSwapTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {  innerPadding ->
-                        MessagesScreen()
+//                        MessagesScreen()
                 }
             }
         }
@@ -71,7 +70,7 @@ class MessageListScreen : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MessagesScreen(viewModel: MessagesViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun MessagesListScreen(viewModel: MessagesViewModel = viewModel()) {
     var selectedFilter by remember { mutableStateOf("All") }
     Column(modifier = Modifier.fillMaxSize().background(BeigeBackground)) {
 
@@ -186,6 +185,6 @@ fun ConversationItem(convo: Conversation, onClick: () -> Unit) {
 @Composable
 fun GreetingPreview2() {
     SkillSwapTheme {
-            MessagesScreen()
+            MessagesListScreen()
     }
 }

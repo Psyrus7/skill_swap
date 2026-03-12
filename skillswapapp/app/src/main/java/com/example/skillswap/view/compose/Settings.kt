@@ -51,6 +51,7 @@ import android.content.Context
 import android.content.ContextWrapper
 
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.rememberNavController
 
 
 /* reuse your color tokens */
@@ -67,8 +68,9 @@ class Settings : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SkillswapappTheme {
+                var navController= rememberNavController()
                 SettingsScreen(
-                    onBack = { finish() }
+                    onBack = {  }
                 )
             }
         }

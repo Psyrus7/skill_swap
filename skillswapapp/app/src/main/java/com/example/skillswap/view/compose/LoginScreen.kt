@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.skillswap.R
 import com.example.skillswap.ui.theme.ActiveIcon
 import com.example.skillswap.ui.theme.BeigeBackground
@@ -41,7 +42,7 @@ import com.example.skillswap.ui.theme.TitleText
 import com.example.skillswap.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
+fun LoginScreen(viewModel: LoginViewModel = viewModel(),navController: NavController) {
     val state by viewModel.state.collectAsState()
     Column(
         modifier = Modifier
@@ -60,7 +61,9 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
             Icon(
                 painterResource(R.drawable.outline_arrow_back_24),
                 contentDescription = "Back Button",
-                modifier = Modifier.clickable(onClick = {})
+                modifier = Modifier.clickable(onClick = {
+                    navController.navigate("signupAndLoginScreen")
+                })
             )
         }
         Spacer(modifier = Modifier.height(60.dp))
@@ -158,7 +161,7 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
         )
         Spacer(modifier = Modifier.height(30.dp))
         Button(
-            onClick = { viewModel.login() },
+            onClick = { navController.navigate("homeScreen") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(54.dp),
@@ -194,7 +197,9 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
                 color = BrownPrimary,
                 fontWeight = FontWeight.Bold,
                 fontFamily = Poppins,
-                modifier = Modifier.clickable { }
+                modifier = Modifier.clickable {
+                    navController.navigate("signupScreen")
+                }
             )
         }
     }
@@ -205,5 +210,5 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview(){
-    LoginScreen()
+//    LoginScreen()
 }

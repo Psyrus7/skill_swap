@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.skillswap.R
 import com.example.skillswap.ui.theme.BeigeBackground
 import com.example.skillswap.ui.theme.BrownPrimary
@@ -36,7 +37,7 @@ import com.example.skillswap.ui.theme.TitleText
 
 
 @Composable
-fun SignupAndLoginScreen() {
+fun SignupAndLoginScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -87,7 +88,9 @@ fun SignupAndLoginScreen() {
         )
         Spacer(modifier = Modifier.height(40.dp))
         Button(
-            onClick = { },
+            onClick = {
+                navController.navigate("signupScreen")
+            },
             modifier = Modifier
                 .width(180.dp)
                 .height(50.dp),
@@ -108,7 +111,9 @@ fun SignupAndLoginScreen() {
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { },
+            onClick = {
+                navController.navigate("loginScreen")
+            },
             modifier = Modifier
                 .width(180.dp)
                 .height(50.dp),
@@ -134,6 +139,6 @@ fun SignupAndLoginScreen() {
 @Preview(showBackground = true)
 @Composable
 fun SignupAndLoginScreenPreview(){
-    SignupAndLoginScreen()
+//    SignupAndLoginScreen()
 }
 

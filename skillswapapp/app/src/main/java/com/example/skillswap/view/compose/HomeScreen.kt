@@ -73,6 +73,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.skillswap.R
 import com.example.skillswap.model.SkillUser
 import com.example.skillswap.ui.theme.BeigeBackground
@@ -98,7 +100,8 @@ class HomeScreen : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SkillSwapTheme {
-                SkillSwapHomeScreen()
+//                SkillSwapHomeScreen()
+
             }
         }
     }
@@ -108,7 +111,8 @@ class HomeScreen : ComponentActivity() {
 @Composable
 fun SkillSwapHomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeScreenViewModel = viewModel()
+    viewModel: HomeScreenViewModel = viewModel(),
+    navController: NavController
 ) {
     val searchText by viewModel.searchText.collectAsState()
     val users = viewModel.filteredUsers()
@@ -147,7 +151,7 @@ fun SkillSwapHomeScreen(
             }
         },
         bottomBar = {
-            SkillSwapBottomBar()
+            SkillSwapBottomBar(viewModel,navController)
         }
 
     ) { innerPadding ->
@@ -289,108 +293,73 @@ fun SkillSwapHomeScreen(
             }
 
             items(users) { user ->
-                SkillUserCard(user)
+                SkillUserCard(user,navController)
             }
         }
     }
 }
 @Composable
-
 fun SkillSwapBottomBar(
-
-    viewModel: HomeScreenViewModel = viewModel()
-
+    viewModel: HomeScreenViewModel = viewModel(),
+    navController: NavController
 ) {
-
     val selectedIndex by viewModel.selectedNavIndex.collectAsState()
-
+    val navBarList = listOf(
+        "homeScreen",
+        "messageListScreen",
+        "notificationScreen",
+        "profileScreen"
+    )
     val navItems: List<Pair<String, ImageVector>> = listOf(
-
         "Home" to Icons.Outlined.Home,
-
         "Chat" to Icons.Outlined.ChatBubbleOutline,
         "Notifications" to Icons.Outlined.NotificationsNone,
-
-
         "Profile" to Icons.Outlined.AccountCircle
-
-
-
     )
-
     NavigationBar(
-
         containerColor = CreamSurface,
-
         tonalElevation = 10.dp
-
     ) {
-
         navItems.forEachIndexed { index, item ->
-
             NavigationBarItem(
-
                 selected = selectedIndex == index,
-
-                onClick = {},   // we don't use this now
-
-                modifier = Modifier.clickable {
-
+                onClick = {
                     viewModel.onNavItemSelected(index)
-
+                    navController.navigate(navBarList[index]) {
+                        launchSingleTop = true
+                    }
                 },
-
                 icon = {
-
                     Icon(
-
                         imageVector = item.second,
-
                         contentDescription = item.first
-
                     )
-
                 },
-
                 label = {
-
                     Text(
-
                         text = item.first,
-
                         fontFamily = DmSans,
-
                         fontWeight = FontWeight.Medium
-
                     )
-
                 },
-
                 colors = NavigationBarItemDefaults.colors(
-
                     selectedIconColor = BrownPrimary,
-
                     selectedTextColor = BrownPrimary,
-
                     indicatorColor = SkillTagBackground,
-
                     unselectedIconColor = TextHint,
-
                     unselectedTextColor = TextHint
-
                 )
-
             )
-
         }
-
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SkillUserCard(user: SkillUser) {
+fun SkillUserCard(
+    user: SkillUser,
+    navController: NavController
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -417,7 +386,6 @@ fun SkillUserCard(user: SkillUser) {
                             .border(2.dp, Color.White, CircleShape),
                         contentScale = ContentScale.Crop
                     )
-
                     Box(
                         modifier = Modifier
                             .size(16.dp)
@@ -426,18 +394,14 @@ fun SkillUserCard(user: SkillUser) {
                             .border(2.dp, Color.White, CircleShape)
                     )
                 }
-
                 Spacer(modifier = Modifier.width(14.dp))
-
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = user.name,
                         color = CardTitle,
                         style = MaterialTheme.typography.titleMedium
                     )
-
                     Spacer(modifier = Modifier.height(4.dp))
-
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Default.Star,
@@ -445,18 +409,14 @@ fun SkillUserCard(user: SkillUser) {
                             tint = StarRatingColor,
                             modifier = Modifier.size(16.dp)
                         )
-
                         Spacer(modifier = Modifier.width(4.dp))
-
                         Text(
                             text = "${user.rating} rating",
                             color = TextPrimary,
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
-
                     Spacer(modifier = Modifier.height(6.dp))
-
                     Text(
                         text = "Ready to teach and collaborate",
                         color = TextHint,
@@ -468,7 +428,7 @@ fun SkillUserCard(user: SkillUser) {
                 val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
                 var showSheet by remember { mutableStateOf(false) }
                 Button(
-                    onClick = { showSheet = true},
+                    onClick = { showSheet = true },
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = BrownPrimary,
@@ -480,7 +440,7 @@ fun SkillUserCard(user: SkillUser) {
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
-                if(showSheet){
+                if (showSheet) {
                     ModalBottomSheet(
                         onDismissRequest = { showSheet = false },
                         sheetState = sheetState
@@ -491,26 +451,27 @@ fun SkillUserCard(user: SkillUser) {
                                 .fillMaxHeight(0.5f)
                         ) {
                             MatchedScreenCard(
+                                navController = navController,
                                 name = user.name,
-                                onSendRequest = { /* TODO */ },
-                                onMessage = { /* TODO */ }
+                                onSendRequest = {
+                                    showSheet = false
+                                },
+                                onMessage = {
+                                    showSheet = false
+                                    navController.navigate("chatScreen")
+                                }
                             )
                         }
                     }
-
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Text(
                 text = "Teaches",
                 color = CardTitle,
                 style = MaterialTheme.typography.titleSmall
             )
-
             Spacer(modifier = Modifier.height(8.dp))
-
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -531,17 +492,13 @@ fun SkillUserCard(user: SkillUser) {
                     Spacer(modifier = Modifier.width(4.dp))
                 }
             }
-
             Spacer(modifier = Modifier.height(12.dp))
-
             Text(
                 text = "Wants to learn",
                 color = CardTitle,
                 style = MaterialTheme.typography.titleSmall
             )
-
             Spacer(modifier = Modifier.height(8.dp))
-
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -570,6 +527,6 @@ fun SkillUserCard(user: SkillUser) {
 @Composable
 fun SkillSwapHomeScreenPreview() {
     SkillSwapTheme {
-        SkillSwapHomeScreen()
+//        SkillSwapHomeScreen()
     }
 }

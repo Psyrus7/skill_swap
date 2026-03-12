@@ -36,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.skillswap.R
 import com.example.skillswap.ui.theme.CreamSurface
 import com.example.skillswap.ui.theme.DividerBeige
@@ -50,7 +51,7 @@ import com.example.skillswap.ui.theme.TitleText
 
 
 @Composable
-fun SignupScreen(viewModel: SignupViewModel = viewModel()) {
+fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavController) {
     val state = viewModel.uiState.collectAsState().value
     Column(
         modifier = Modifier
@@ -66,7 +67,9 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel()) {
        Icon(
            painterResource(R.drawable.outline_arrow_back_24),
            contentDescription = "Back Button",
-           modifier = Modifier.clickable(onClick = {})
+           modifier = Modifier.clickable(onClick = {
+               navController.navigate("signupAndLoginScreen")
+           })
        )
         Spacer(Modifier.height(5.dp))
         Column(
@@ -301,7 +304,9 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel()) {
                     color = BrownPrimary,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { }
+                    modifier = Modifier.clickable {
+                        navController.navigate("loginScreen")
+                    }
                 )
             }
         }
@@ -311,7 +316,7 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel()) {
 @Preview(showBackground = true)
 @Composable
 fun SignupScreenPreview(){
-    SignupScreen()
+//    SignupScreen( )
 }
 
 
