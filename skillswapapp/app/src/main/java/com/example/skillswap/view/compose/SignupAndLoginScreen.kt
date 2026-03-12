@@ -16,10 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.skillswap.R
 import com.example.skillswap.ui.theme.BeigeBackground
 import com.example.skillswap.ui.theme.BrownPrimary
 import com.example.skillswap.ui.theme.ButtonPrimary
@@ -48,26 +50,24 @@ fun SignupAndLoginScreen() {
     ) {
         Spacer(modifier = Modifier.height(60.dp))
         Text(
-            text = "Welcome to App name",
+            text = "Welcome to Skill Swap",
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            color = TitleText,
-            fontFamily = Poppins
+            style =MaterialTheme.typography.titleLarge ,
         )
         Spacer(modifier = Modifier.height(120.dp))
         Box(
             modifier = Modifier
-                .size(90.dp)
+                .size(200.dp)
                 .clip(CircleShape)
-                .background(BrownPrimary)
-                .border(2.dp, GoldAccent, CircleShape),
-            contentAlignment = Alignment.Center
+                .background(BeigeBackground)
+            ,contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.School,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(40.dp)
+                painter = painterResource(R.drawable.skillswaplogo),
+                contentDescription = "Logo",
+                modifier = Modifier.size(180.dp),
+                tint = Color.Unspecified
             )
         }
         Spacer(modifier = Modifier.height(30.dp))
