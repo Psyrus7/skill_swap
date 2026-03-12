@@ -1,8 +1,22 @@
 package com.example.skillswap.view.compose.notifications
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -11,7 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.skillswap.ui.theme.*
+import com.example.skillswap.ui.theme.BeigeBackground
+import com.example.skillswap.ui.theme.ButtonPrimary
+import com.example.skillswap.ui.theme.CreamSurface
+import com.example.skillswap.ui.theme.SkillSwapTheme
+import com.example.skillswap.ui.theme.TextHint
+import com.example.skillswap.ui.theme.TextPrimary
+import com.example.skillswap.ui.theme.TextSecondary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,7 +88,9 @@ fun EmptyNotificationsScreen(onExploreClick: () -> Unit = {}) {
                     contentColor = Color.White
                 ),
                 shape = RoundedCornerShape(12.dp)
-            ) { Text("Explore") }
+            ) {
+                Text("Explore")
+            }
         }
     }
 }
