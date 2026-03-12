@@ -6,7 +6,7 @@ import com.example.skillswap.model.SkillUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class SkillSwapViewModel : ViewModel() {
+class HomeScreenViewModel : ViewModel() {
 
     // SEARCH TEXT STATE
     private val _searchText = MutableStateFlow("")

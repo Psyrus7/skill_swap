@@ -199,7 +199,7 @@ fun MatchedScreenCard(
 
                 Text(
 
-                    text = "you want to learn acting\n$name wants to learn coding",
+                    text = "You want to learn acting\n$name wants to learn coding",
 
                     color = TextSecondary,
 

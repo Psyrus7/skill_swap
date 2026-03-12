@@ -29,11 +29,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.NotificationsNone
-import androidx.compose.material.icons.outlined.Person
 
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Search
@@ -92,7 +90,7 @@ import com.example.skillswap.ui.theme.StarRatingColor
 import com.example.skillswap.ui.theme.TextHint
 import com.example.skillswap.ui.theme.TextPrimary
 import com.example.skillswap.ui.theme.TitleText
-import com.example.skillswap.viewmodel.SkillSwapViewModel
+import com.example.skillswap.viewmodel.HomeScreenViewModel
 
 class HomeScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,7 +108,7 @@ class HomeScreen : ComponentActivity() {
 @Composable
 fun SkillSwapHomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: SkillSwapViewModel = viewModel()
+    viewModel: HomeScreenViewModel = viewModel()
 ) {
     val searchText by viewModel.searchText.collectAsState()
     val users = viewModel.filteredUsers()
@@ -300,7 +298,7 @@ fun SkillSwapHomeScreen(
 
 fun SkillSwapBottomBar(
 
-    viewModel: SkillSwapViewModel = viewModel()
+    viewModel: HomeScreenViewModel = viewModel()
 
 ) {
 
