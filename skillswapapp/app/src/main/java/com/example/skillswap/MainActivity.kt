@@ -1,5 +1,6 @@
 package com.example.skillswap
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,16 +35,13 @@ import com.example.skillswap.viewmodel.MessagesViewModel
 import com.example.skillswap.viewmodel.SignupViewModel
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             SkillSwapTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    Greeting(
-//                        name = "From Team Epsilon ,it's day 1",
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
+                Scaffold(modifier = Modifier.fillMaxSize()) {  innerPadding ->
                     AppNavigation()
                 }
             }

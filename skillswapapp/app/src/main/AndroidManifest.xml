@@ -21,12 +21,7 @@
             android:label="@string/title_activity_message_list_screen"
             android:theme="@style/Theme.SkillSwap">
         </activity>
-        <activity
-            android:name=".view.compose.MatchedScreenCard"
-            android:exported="true"
-            android:label="@string/title_activity_matched_screen_card"
-            android:theme="@style/Theme.SkillSwap">
-        </activity>
+
         <activity
             android:name=".view.compose.notifications.NotificationActivity"
             android:exported="true"
