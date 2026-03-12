@@ -10,7 +10,9 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
+val DividerColor=Color(0xFFE4D6C7)
 
+val CardBackground= Color(0xFFEFE2D6)
 val BrownPrimary = Color(0xFF8B5E3C)
 val BrownDark = Color(0xFF5C3A21)
 val BeigeBackground = Color(0xFFF5EDE4)
