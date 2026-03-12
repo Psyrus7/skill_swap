@@ -11,19 +11,31 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SkillSwap">
         <activity
+            android:name=".view.compose.Settings"
+            android:exported="false"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/Theme.SkillSwap" />
+        <activity
             android:name=".view.compose.MessageListScreen"
             android:exported="true"
             android:label="@string/title_activity_message_list_screen"
+            android:theme="@style/Theme.SkillSwap"></activity>
+        <activity
+            android:name=".view.compose.ProfilePage"
+            android:exported="true"
+            android:label="title_activity_profile_page"
             android:theme="@style/Theme.SkillSwap">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".view.compose.MatchedScreenCard"
             android:exported="true"
             android:label="@string/title_activity_matched_screen_card"
-            android:theme="@style/Theme.SkillSwap">
-
-        </activity>
+            android:theme="@style/Theme.SkillSwap"></activity>
         <activity
             android:name=".view.compose.HomeScreen"
             android:exported="true"
@@ -39,16 +51,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="skill_swap"
-            android:theme="@style/Theme.SkillSwap">
-
-        </activity>
-        <activity
-            android:name=".view.compose.ProfilePage"
-            android:exported="true"
-            android:label="title_activity_profile_page"
-            android:theme="@style/Theme.SkillSwap">
-
-        </activity>
+            android:theme="@style/Theme.SkillSwap"></activity>
     </application>
 
 </manifest>
