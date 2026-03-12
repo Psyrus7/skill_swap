@@ -15,9 +15,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,7 +34,9 @@ import com.example.skillswap.ui.theme.TextSecondary
 import com.example.skillswap.viewmodel.SignupViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.skillswap.R
 import com.example.skillswap.ui.theme.CreamSurface
 import com.example.skillswap.ui.theme.DividerBeige
 import com.example.skillswap.ui.theme.DmSans
@@ -57,21 +61,20 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel()) {
                 )
             )
             .verticalScroll(rememberScrollState())
-            .padding(20.dp)
+            .padding(10.dp)
     ) {
-        Text(
-            text = "← Back to Home",
-            color = TextSecondary,
-            fontFamily = DmSans,
-            fontWeight = FontWeight.Medium
-        )
-        Spacer(Modifier.height(20.dp))
+       Icon(
+           painterResource(R.drawable.outline_arrow_back_24),
+           contentDescription = "Back Button",
+           modifier = Modifier.clickable(onClick = {})
+       )
+        Spacer(Modifier.height(5.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(CreamSurface, RoundedCornerShape(24.dp))
                 .border(1.dp, DividerBeige, RoundedCornerShape(24.dp))
-                .padding(20.dp)
+                .padding(10.dp)
         ) {
             Text(
                 text = "Create Account",

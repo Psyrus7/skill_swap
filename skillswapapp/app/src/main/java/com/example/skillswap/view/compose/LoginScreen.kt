@@ -18,11 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.skillswap.R
 import com.example.skillswap.ui.theme.ActiveIcon
 import com.example.skillswap.ui.theme.BeigeBackground
 import com.example.skillswap.ui.theme.BrownPrimary
@@ -56,16 +58,9 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
             modifier = Modifier.clickable { }
         ) {
             Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = null,
-                tint = ActiveIcon
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Back to Home",
-                color = TextPrimary,
-                fontFamily = DmSans,
-                fontWeight = FontWeight.Medium
+                painterResource(R.drawable.outline_arrow_back_24),
+                contentDescription = "Back Button",
+                modifier = Modifier.clickable(onClick = {})
             )
         }
         Spacer(modifier = Modifier.height(60.dp))
