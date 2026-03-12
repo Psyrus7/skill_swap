@@ -1,5 +1,4 @@
 package com.example.skillswap.view.compose
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,8 +29,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.Person
+
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,6 +47,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -60,8 +67,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -73,9 +82,11 @@ import com.example.skillswap.ui.theme.BrownPrimary
 import com.example.skillswap.ui.theme.CardTitle
 import com.example.skillswap.ui.theme.CreamSurface
 import com.example.skillswap.ui.theme.DividerBeige
+import com.example.skillswap.ui.theme.DmSans
 import com.example.skillswap.ui.theme.SearchBackground
 import com.example.skillswap.ui.theme.SearchBorder
 import com.example.skillswap.ui.theme.SkillSwapTheme
+import com.example.skillswap.ui.theme.SkillTagBackground
 import com.example.skillswap.ui.theme.SoftBeigeCard
 import com.example.skillswap.ui.theme.StarRatingColor
 import com.example.skillswap.ui.theme.TextHint
@@ -128,49 +139,19 @@ fun SkillSwapHomeScreen(
                             )
                         }
                     },
-                    navigationIcon = {
-                        Box(
-                            modifier = Modifier
-                                .padding(start = 12.dp)
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(Color.White)
-                                .border(1.dp, DividerBeige, CircleShape)
-                                .clickable { },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.NotificationsNone,
-                                contentDescription = "Notifications",
-                                tint = TextPrimary
-                            )
-                        }
-                    },
-                    actions = {
-                        Box(
-                            modifier = Modifier
-                                .padding(end = 12.dp)
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(Color.White)
-                                .border(1.dp, DividerBeige, CircleShape)
-                                .clickable { },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Person,
-                                contentDescription = "Profile",
-                                tint = TextPrimary
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
+
+
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = CreamSurface
                     )
                 )
                 HorizontalDivider(color = DividerBeige)
             }
+        },
+        bottomBar = {
+            SkillSwapBottomBar()
         }
+
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -270,7 +251,6 @@ fun SkillSwapHomeScreen(
                         ) {
                             popularSkills.forEach { skill ->
                                 Surface(
-                                    modifier = Modifier.clickable(onClick = {}),
                                     shape = RoundedCornerShape(50.dp),
                                     color = Color.White,
                                     border = BorderStroke(1.dp, SearchBorder)
@@ -315,6 +295,99 @@ fun SkillSwapHomeScreen(
             }
         }
     }
+}
+@Composable
+
+fun SkillSwapBottomBar(
+
+    viewModel: SkillSwapViewModel = viewModel()
+
+) {
+
+    val selectedIndex by viewModel.selectedNavIndex.collectAsState()
+
+    val navItems: List<Pair<String, ImageVector>> = listOf(
+
+        "Home" to Icons.Outlined.Home,
+
+        "Chat" to Icons.Outlined.ChatBubbleOutline,
+        "Notifications" to Icons.Outlined.NotificationsNone,
+
+
+        "Profile" to Icons.Outlined.AccountCircle
+
+
+
+    )
+
+    NavigationBar(
+
+        containerColor = CreamSurface,
+
+        tonalElevation = 10.dp
+
+    ) {
+
+        navItems.forEachIndexed { index, item ->
+
+            NavigationBarItem(
+
+                selected = selectedIndex == index,
+
+                onClick = {},   // we don't use this now
+
+                modifier = Modifier.clickable {
+
+                    viewModel.onNavItemSelected(index)
+
+                },
+
+                icon = {
+
+                    Icon(
+
+                        imageVector = item.second,
+
+                        contentDescription = item.first
+
+                    )
+
+                },
+
+                label = {
+
+                    Text(
+
+                        text = item.first,
+
+                        fontFamily = DmSans,
+
+                        fontWeight = FontWeight.Medium
+
+                    )
+
+                },
+
+                colors = NavigationBarItemDefaults.colors(
+
+                    selectedIconColor = BrownPrimary,
+
+                    selectedTextColor = BrownPrimary,
+
+                    indicatorColor = SkillTagBackground,
+
+                    unselectedIconColor = TextHint,
+
+                    unselectedTextColor = TextHint
+
+                )
+
+            )
+
+        }
+
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
