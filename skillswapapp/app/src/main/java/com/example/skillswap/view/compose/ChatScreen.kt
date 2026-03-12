@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,6 +35,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,10 +45,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skillswap.R
 import com.example.skillswap.ui.theme.BeigeBackground
 import com.example.skillswap.ui.theme.SkillSwapTheme
 import com.example.skillswap.ui.theme.SoftBeigeCard
+import com.example.skillswap.viewmodel.ChatViewModel
 
 class ChatScreen : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -64,7 +69,8 @@ class ChatScreen : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MessageScreen() {
+fun MessageScreen(viewModel: ChatViewModel=viewModel()) {
+    val messages by viewModel.messages.collectAsState()
     Column(
     ) {
         TopAppBar(
@@ -122,41 +128,15 @@ fun MessageScreen() {
                 .padding(8.dp)
                 .background(BeigeBackground)
         ) {
-            item {
+            items(messages){message ->
                 MessageBubble(
-                    text = "Hi! I'm interested in your property. is it still available",
-                    time = "12:43 PM",
-                    isUser = true
+                    text = message.text,
+                    time = message.time,
+                    isUser = message.isUser
                 )
+
             }
-            item {
-                MessageBubble(
-                    text = "Yes, it's still available! would you like to schedule a viewing",
-                    time = "11:50 AM",
-                    isUser = false
-                )
-            }
-            item {
-                MessageBubble(
-                    text = "Can you meeting with tomorrow?",
-                    time = "11:50 AM",
-                    isUser = false
-                )
-            }
-            item {
-                MessageBubble(
-                    text = "Please let me know when you're available.",
-                    time = "11:50 AM",
-                    isUser = false
-                )
-            }
-            item {
-                MessageBubble(
-                    text = "Sure",
-                    time = "12:43 PM",
-                    isUser = true
-                )
-            }
+
         }
 
         // Input bar
