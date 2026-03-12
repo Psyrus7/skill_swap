@@ -1,4 +1,4 @@
-package com.example.skillswap.view.compose.ui.theme
+package com.example.skillswap.view.compose.notifications.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -10,17 +10,6 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.example.skillswap.ui.theme.BeigeBackground
-import com.example.skillswap.ui.theme.BrownPrimary
-import com.example.skillswap.ui.theme.ButtonSecondary
-import com.example.skillswap.ui.theme.CreamSurface
-import com.example.skillswap.ui.theme.DividerBeige
-import com.example.skillswap.ui.theme.GoldAccent
-import com.example.skillswap.ui.theme.SoftBeigeCard
-import com.example.skillswap.ui.theme.TextPrimary
-import com.example.skillswap.ui.theme.TitleText
-import androidx.compose.material3.*
-import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -45,7 +34,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun SkillswapappTheme(
+fun SkillSwapTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
@@ -64,37 +53,6 @@ fun SkillswapappTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
-    )
-}
-
-
-
-
-private val BrownColorScheme = lightColorScheme(
-    primary = BrownPrimary,
-    onPrimary = Color.White,
-    primaryContainer = GoldAccent,
-    onPrimaryContainer = TitleText,
-
-    secondary = ButtonSecondary,
-    onSecondary = TextPrimary,
-
-    background = BeigeBackground,
-    onBackground = TextPrimary,
-
-    surface = CreamSurface,
-    onSurface = TextPrimary,
-
-    surfaceVariant = SoftBeigeCard,
-    outline = DividerBeige
-)
-
-@Composable
-fun BrownAppTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = BrownColorScheme,
-        typography = Typography(),
         content = content
     )
 }
