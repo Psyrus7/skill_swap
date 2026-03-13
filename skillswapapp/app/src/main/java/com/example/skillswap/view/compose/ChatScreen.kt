@@ -21,7 +21,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 
 import androidx.compose.foundation.lazy.LazyColumn
-
 import androidx.compose.foundation.lazy.items
 
 import androidx.compose.foundation.shape.CircleShape
@@ -39,10 +38,14 @@ import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material3.*
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 
 import androidx.compose.runtime.collectAsState
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Alignment
 
@@ -77,6 +80,10 @@ import com.example.skillswap.ui.theme.SkillSwapTheme
 import com.example.skillswap.ui.theme.SoftBeigeCard
 
 import com.example.skillswap.viewmodel.ChatViewModel
+import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ChatScreen : ComponentActivity() {
 
@@ -101,7 +108,10 @@ class ChatScreen : ComponentActivity() {
     }
 
 }
-
+fun formatTime(timestamp: Long): String {
+    val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+    return sdf.format(Date(timestamp))
+}
 @OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
@@ -109,15 +119,19 @@ class ChatScreen : ComponentActivity() {
 fun MessageScreen(
 
     navController: NavController,
-
+    conversationId: String,
+    userName: String,
     viewModel: ChatViewModel = viewModel()
 
 ) {
 
     val messages by viewModel.messages.collectAsState()
-
+    val currentUserId = FirebaseAuth.getInstance().uid
     val context = LocalContext.current
-
+    var messageText by remember { mutableStateOf("") }
+    LaunchedEffect(conversationId) {
+        viewModel.listenMessages(conversationId)
+    }
     Scaffold(
 
         containerColor = BeigeBackground,
@@ -188,7 +202,7 @@ fun MessageScreen(
 
                             Text(
 
-                                "Jack King",
+                                userName,
 
                                 fontWeight = FontWeight.Bold,
 
@@ -265,14 +279,14 @@ fun MessageScreen(
             ) {
 
                 items(messages) { message ->
-
+                    val isUser = message.senderId==currentUserId
                     MessageBubble(
 
                         text = message.text,
 
-                        time = message.time,
+                        time = formatTime(message.timestamp),
 
-                        isUser = message.isUser
+                        isUser = isUser
 
                     )
 
@@ -296,9 +310,9 @@ fun MessageScreen(
 
                 TextField(
 
-                    value = "",
+                    value = messageText,
 
-                    onValueChange = {},
+                    onValueChange = {messageText=it},
 
                     placeholder = { Text("Type a message...") },
 
@@ -306,7 +320,16 @@ fun MessageScreen(
 
                 )
 
-                IconButton(onClick = { }) {
+                IconButton(onClick = {
+                    val senderId = FirebaseAuth.getInstance().uid?:
+                    return@IconButton
+                    viewModel.sendMessage(
+                        text = messageText,
+                        conversationId=conversationId,
+                        senderId=senderId
+                    )
+                    messageText=""
+                }) {
 
                     Icon(
 
@@ -376,18 +399,3 @@ fun MessageBubble(text: String, time: String, isUser: Boolean) {
 
 }
 
-@Preview(showBackground = true)
-
-@Composable
-
-fun GreetingPreview() {
-
-    val navController = rememberNavController()
-
-    SkillSwapTheme {
-
-        MessageScreen(navController = navController)
-
-    }
-
-}

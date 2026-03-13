@@ -1,10 +1,11 @@
 package com.example.skillswap.model
 
 data class Conversation(
-    val id: Int,
-    val name: String,
-    val lastMessage: String,
-    val time: String,
-    val unreadCount: Int,
-    val profileRes: Int
+    val id: String = "",
+    val participants: List<String> = emptyList(),
+    val lastMessage: String = "",
+    val timestamp: Long = 0,
+    val unreadCount: Int = 0,
+    val otherUserName: String = "",
+    val otherUserProfile: String = ""
 )

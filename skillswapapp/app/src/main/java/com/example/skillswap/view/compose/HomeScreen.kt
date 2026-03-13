@@ -1,5 +1,6 @@
 package com.example.skillswap.view.compose
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -86,6 +87,7 @@ import com.example.skillswap.ui.theme.TextHint
 import com.example.skillswap.ui.theme.TextPrimary
 import com.example.skillswap.ui.theme.TitleText
 import com.example.skillswap.viewmodel.HomeScreenViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class HomeScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -399,7 +401,9 @@ fun SkillUserCard(
                                 },
                                 onMessage = {
                                     showSheet = false
-                                    navController.navigate("chatScreen")
+                                    val encodedName = Uri.encode(user.name)
+                                    navController.navigate("chat/${user.name}/$encodedName")
+                                   // navController.navigate("chatScreen")
                                 }
                             )
                         }
