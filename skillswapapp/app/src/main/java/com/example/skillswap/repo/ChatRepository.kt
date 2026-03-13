@@ -7,28 +7,20 @@ class ChatRepository {
     private val db = FirebaseFirestore.getInstance()
 
     fun sendMessage(message: ChatMessage) {
+        val docRef = db.collection("messages").document()
+        val messageWithId = message.copy(id = docRef.id)
 
-        db.collection("messages")
-
-            .add(message)
+        docRef.set(messageWithId)
 
         db.collection("conversations")
-
             .document(message.conversationId)
-
             .set(
-
                 mapOf(
-
                     "lastMessage" to message.text,
-
                     "timestamp" to System.currentTimeMillis()
-
                 ),
                 com.google.firebase.firestore.SetOptions.merge()
-
             )
-
     }
 
     fun listenMessages(
