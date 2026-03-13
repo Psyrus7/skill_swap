@@ -6,23 +6,17 @@ package com.example.skillswap.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.skillswap.model.Signup
-import com.example.skillswap.model.SkillUser
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.example.skillswap.repo.SignupRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class SignupViewModel : ViewModel() {
+
+class SignupViewModel(
+    private val repository: SignupRepository = SignupRepository()
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(Signup())
     val uiState: StateFlow<Signup> = _uiState
-
-    private val auth = FirebaseAuth.getInstance()
-
-    // reference to database
-    private val database = FirebaseDatabase
-        .getInstance()
-        .getReference("users")
 
     fun onFullNameChange(value: String) {
         _uiState.value = _uiState.value.copy(fullName = value)
@@ -49,7 +43,6 @@ class SignupViewModel : ViewModel() {
     }
 
     fun onSignupClick() {
-
         val state = _uiState.value
 
         if (state.password != state.confirmPassword) {
@@ -59,53 +52,27 @@ class SignupViewModel : ViewModel() {
 
         _uiState.value = state.copy(isLoading = true)
 
-        // STEP 1: Create user in FirebaseAuth
-        auth.createUserWithEmailAndPassword(state.email, state.password)
-            .addOnCompleteListener { task ->
-
-                if (task.isSuccessful) {
-
-                    val uid = auth.currentUser!!.uid
-
-                    // STEP 2: Create SkillUser object
-                    val skillUser = SkillUser(
-                        id = uid,
-                        name = state.fullName,
-                        profileImage = "",
-                        teaches = listOf(state.teachSkill),
-                        wantsToLearn = listOf(state.learnSkill),
-                        rating = 0f
-                    )
-
-                    // STEP 3: Save to Realtime Database
-                    database.child(uid).setValue(skillUser)
-                        .addOnCompleteListener { dbTask ->
-
-                            if (dbTask.isSuccessful) {
-
-                                _uiState.value = state.copy(
-                                    isLoading = false,
-                                    isSuccess = true
-                                )
-
-                            } else {
-
-                                _uiState.value = state.copy(
-                                    isLoading = false,
-                                    errorMessage = dbTask.exception?.message
-                                )
-
-                            }
-                        }
-
-                } else {
-
-                    _uiState.value = state.copy(
-                        isLoading = false,
-                        errorMessage = task.exception?.message
-                    )
-
-                }
+        repository.signup(
+            fullName = state.fullName,
+            email = state.email,
+            password = state.password,
+            teachSkill = state.teachSkill,
+            learnSkill = state.learnSkill
+        ) { success, error ->
+            if (success) {
+                _uiState.value = state.copy(
+                    isLoading = false,
+                    isSuccess = true
+                )
+            } else {
+                _uiState.value = state.copy(
+                    isLoading = false,
+                    errorMessage = error
+                )
             }
+        }
     }
 }
+
+
+

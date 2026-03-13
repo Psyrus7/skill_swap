@@ -177,7 +177,6 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(),navController: NavContro
         Button(
             onClick = {
                 viewModel.login()
-
                  },
             modifier = Modifier
                 .fillMaxWidth()

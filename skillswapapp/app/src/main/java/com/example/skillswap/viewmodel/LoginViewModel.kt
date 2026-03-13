@@ -1,15 +1,17 @@
 package com.example.skillswap.viewmodel
 
+import AuthRepository
 import androidx.lifecycle.ViewModel
 import com.example.skillswap.model.Login
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class LoginViewModel: ViewModel() {
-    private val _state = MutableStateFlow(Login())
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+class LoginViewModel(
+    private val repository: AuthRepository = AuthRepository()
+) : ViewModel() {
 
+    private val _state = MutableStateFlow(Login())
     val state: StateFlow<Login> = _state
 
     fun updateEmail(email: String) {
@@ -20,54 +22,34 @@ class LoginViewModel: ViewModel() {
         _state.value = _state.value.copy(password = password)
     }
 
-//    fun login() {
-//
-//        val email = _state.value.email
-//        val password = _state.value.password
-//
-//        if (email.isEmpty() || password.isEmpty()) {
-//            _state.value = _state.value.copy(error = "Fields cannot be empty")
-//            return
-//        }
-//
-//        _state.value = _state.value.copy(isLoading = true)
-//
-//        // Simulate login
-//        _state.value = _state.value.copy(
-//            isLoading = false,
-//            error = null
-//        )
-//    }
-fun login() {
-    val email = _state.value.email
-    val password = _state.value.password
+    fun login() {
+        val email = _state.value.email
+        val password = _state.value.password
 
-    if (email.isEmpty() || password.isEmpty()) {
-        _state.value = _state.value.copy(error = "Fields cannot be empty")
-        return
-    }
+        if (email.isEmpty() || password.isEmpty()) {
+            _state.value = _state.value.copy(error = "Fields cannot be empty")
+            return
+        }
 
-    _state.value = _state.value.copy(isLoading = true)
+        _state.value = _state.value.copy(isLoading = true)
 
-    auth.signInWithEmailAndPassword(email, password)
-        .addOnCompleteListener { task ->
-            if (task.isSuccessful) {
+        repository.login(email, password) { success, error ->
+            if (success) {
                 _state.value = _state.value.copy(
                     isLoading = false,
                     isSuccess = true,
                     error = null
                 )
-                println("Login successful: ${auth.currentUser?.uid}")
+                println("Login successful: ${repository.getCurrentUserId()}")
             } else {
                 _state.value = _state.value.copy(
                     isLoading = false,
                     isSuccess = false,
-                    error = task.exception?.message
+                    error = error
                 )
-                println("Login failed: ${task.exception?.message}")
-
+                println("Login failed: $error")
             }
         }
+    }
 }
 
-}

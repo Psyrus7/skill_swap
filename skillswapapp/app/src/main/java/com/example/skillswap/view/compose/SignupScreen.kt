@@ -298,6 +298,7 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavCont
                     containerColor = BrownPrimary,
                     contentColor = Color.White
                 ),
+                enabled = state.fullName.isNotEmpty() && state.email.isNotEmpty() && state.learnSkill.isNotEmpty() && state.teachSkill.isNotEmpty() && state.password.isNotEmpty()&& state.confirmPassword.isNotEmpty(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
