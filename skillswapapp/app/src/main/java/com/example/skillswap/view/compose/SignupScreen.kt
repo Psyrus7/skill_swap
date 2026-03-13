@@ -1,6 +1,8 @@
 package com.example.skillswap.view.compose
 
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -38,7 +40,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -61,6 +65,7 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavCont
     val state = viewModel.uiState.collectAsState().value
     var passwordCheck by remember { mutableStateOf(false) }
     var confirmPasswordCheck by remember { mutableStateOf(false) }
+    val context= LocalContext.current
 
     Column(
         modifier = Modifier
@@ -278,6 +283,7 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavCont
                     )
                 }
                 },
+                visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -292,7 +298,12 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavCont
             )
             Spacer(Modifier.height(22.dp))
             Button(
-                onClick = { viewModel.onSignupClick()
+                onClick = { if(state.password.equals(state.confirmPassword)){
+                    viewModel.onSignupClick()
+                        }
+                    else{
+                    Toast.makeText(context, "Password should be same", Toast.LENGTH_SHORT).show()
+                        }
                           },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = BrownPrimary,
