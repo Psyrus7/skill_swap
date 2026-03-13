@@ -60,80 +60,99 @@ import com.example.skillswap.viewmodel.MessagesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MessagesListScreen(navController: NavController,viewModel: MessagesViewModel = viewModel()) {
+fun MessagesListScreen(navController: NavController, viewModel: MessagesViewModel = viewModel()) {
     var selectedFilter by remember { mutableStateOf("All") }
     val conversations by viewModel.conversations.collectAsState()
-    Column(modifier = Modifier.fillMaxSize().background(BeigeBackground)) {
+
+    Scaffold(
+        bottomBar = {
+            SkillSwapBottomBar(navController)
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BeigeBackground)
+                .padding(innerPadding)
+        ) {
 
             // Header
-        TopAppBar(
-            title = {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    // Left side: Back button
-                    IconButton(onClick = { /* Back */ }) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                            contentDescription = "Back Button",
-                            tint = TextPrimary
+            TopAppBar(
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        // Left side: Back button
+                        IconButton(onClick = { /* Back */ }) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                contentDescription = "Back Button",
+                                tint = TextPrimary
+                            )
+                        }
+
+                        // Center: Title
+                        Text(
+                            "Messages",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleLarge
                         )
-                    }
 
-                    // Center: Title
-                    Text(
-                        "Messages",
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-
-                    // Right side: Compose icon
-                    IconButton(onClick = { /* Compose */ }) {
-                        Icon(
-                            painterResource(R.drawable.composeicon),
-                            contentDescription = "Compose",
-                            tint = TextPrimary
-
-                        )
+                        // Right side: Compose icon
+                        IconButton(onClick = { /* Compose */ }) {
+                            Icon(
+                                painterResource(R.drawable.composeicon),
+                                contentDescription = "Compose",
+                                tint = TextPrimary
+                            )
+                        }
                     }
                 }
-            }
-        )
-
-
-
-        // Search + Filters
-        Column(modifier = Modifier.padding(8.dp)) {
-            TextField(
-                value = "",
-                onValueChange = {},
-                placeholder = { Text("Search",style = MaterialTheme.typography.titleMedium)},
-                modifier = Modifier.fillMaxWidth()
             )
-            Row(modifier = Modifier.padding(top = 8.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                listOf("All", "Contacts", "Unknown", "New").forEach { filter ->
-                    val isSelected = filter == selectedFilter
-                    TextButton(onClick = { selectedFilter=filter },
-                        colors = ButtonDefaults.textButtonColors(
-                            containerColor = if (isSelected) Color.Black else Color.Transparent,
-                            contentColor = if (isSelected) Color.White else Color.Black
-                        ), shape = ButtonDefaults.elevatedShape ) {
-                        Text(filter,style = MaterialTheme.typography.bodyMedium)
+
+            // Search + Filters
+            Column(modifier = Modifier.padding(8.dp)) {
+                TextField(
+                    value = "",
+                    onValueChange = {},
+                    placeholder = { Text("Search", style = MaterialTheme.typography.titleMedium) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Row(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    listOf("All", "Contacts", "Unknown", "New").forEach { filter ->
+                        val isSelected = filter == selectedFilter
+                        TextButton(
+                            onClick = { selectedFilter = filter },
+                            colors = ButtonDefaults.textButtonColors(
+                                containerColor = if (isSelected) Color.Black else Color.Transparent,
+                                contentColor = if (isSelected) Color.White else Color.Black
+                            ),
+                            shape = ButtonDefaults.elevatedShape
+                        ) {
+                            Text(filter, style = MaterialTheme.typography.bodyMedium)
+                        }
                     }
                 }
             }
-        }
 
-        // Conversation list
-        LazyColumn(modifier = Modifier.weight(1f).background(CreamSurface)) {
-            items(conversations) { convo ->
-                ConversationItem(convo=convo,onClick={
-                    navController.navigate(
-                        "chat/${convo.id}"
-                    )
-                })
+            // Conversation list
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .background(CreamSurface)
+            ) {
+                items(conversations) { convo ->
+                    ConversationItem(convo = convo, onClick = {
+                        navController.navigate("chat/${convo.id}")
+                    })
+                }
             }
         }
     }
@@ -151,9 +170,15 @@ fun ConversationItem(convo: Conversation, onClick: () -> Unit) {
         AsyncImage(
             model = convo.otherUserProfile,
             contentDescription = "Profile",
-            modifier = Modifier.size(48.dp).clip(CircleShape)
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
         )
-        Column(modifier = Modifier.weight(1f).padding(start = 12.dp)) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 12.dp)
+        ) {
             Text(convo.otherUserName, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
             Text(convo.lastMessage, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
         }
@@ -171,8 +196,3 @@ fun ConversationItem(convo: Conversation, onClick: () -> Unit) {
         }
     }
 }
-
-
-
-
-
