@@ -85,7 +85,10 @@ fun MessagesListScreen(navController: NavController, viewModel: MessagesViewMode
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         // Left side: Back button
-                        IconButton(onClick = { /* Back */ }) {
+                        IconButton(onClick = {
+//                            navController.navigate("homeScreen")
+                            navController.popBackStack()
+                        }) {
                             Icon(
                                 Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                                 contentDescription = "Back Button",
