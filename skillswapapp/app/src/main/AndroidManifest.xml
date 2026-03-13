@@ -12,11 +12,11 @@
         android:roundIcon="@drawable/skillswaplogo"
         android:supportsRtl="true"
         android:theme="@style/Theme.SkillSwap">
-        <activity
-            android:name=".view.compose.Settings"
-            android:exported="true"
-            android:label="@string/title_activity_settings"
-            android:theme="@style/Theme.SkillSwap" />
+<!--        <activity-->
+<!--            android:name=".view.compose.Settings"-->
+<!--            android:exported="true"-->
+<!--            android:label="@string/title_activity_settings"-->
+<!--            android:theme="@style/Theme.SkillSwap" />-->
         <activity
             android:name=".view.compose.MessageListScreen"
             android:exported="true"
@@ -49,12 +49,12 @@
             </intent-filter>
 
         </activity>
-        <activity
-            android:name=".view.compose.ProfilePage"
-            android:exported="true"
-            android:label="title_activity_profile_page"
-            android:theme="@style/Theme.SkillSwap">
-        </activity>
+<!--        <activity-->
+<!--            android:name=".view.compose.ProfilePage"-->
+<!--            android:exported="true"-->
+<!--            android:label="title_activity_profile_page"-->
+<!--            android:theme="@style/Theme.SkillSwap">-->
+<!--        </activity>-->
         <activity
             android:name=".view.compose.ChatScreen"
             android:exported="true"

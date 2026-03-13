@@ -132,9 +132,11 @@ fun MatchedScreenCard(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSkillMatchedCardSimple() {
     SkillSwapTheme {
+
     }
 }

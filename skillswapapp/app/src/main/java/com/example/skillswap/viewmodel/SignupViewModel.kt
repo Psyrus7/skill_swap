@@ -1,16 +1,28 @@
+
+
+
+
 package com.example.skillswap.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.skillswap.model.Signup
+import com.example.skillswap.model.SkillUser
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class SignupViewModel: ViewModel() {
-    private val _uiState = MutableStateFlow(Signup())
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+class SignupViewModel : ViewModel() {
 
+    private val _uiState = MutableStateFlow(Signup())
     val uiState: StateFlow<Signup> = _uiState
+
+    private val auth = FirebaseAuth.getInstance()
+
+    // reference to database
+    private val database = FirebaseDatabase
+        .getInstance()
+        .getReference("users")
 
     fun onFullNameChange(value: String) {
         _uiState.value = _uiState.value.copy(fullName = value)
@@ -36,43 +48,64 @@ class SignupViewModel: ViewModel() {
         _uiState.value = _uiState.value.copy(confirmPassword = value)
     }
 
-//    fun onSignupClick() {
-//        val currentState = _uiState.value
-//        if (currentState.password != currentState.confirmPassword) {
-//            println("Passwords do not match")
-//            return
-//        }
-//
-//        auth.createUserWithEmailAndPassword(currentState.email, currentState.password)
-//            .addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    println("Signup successful: ${auth.currentUser?.uid}")
-//                } else {
-//                    println("Signup failed: ${task.exception?.message}")
-//                }
-//            }
-//    }
-fun onSignupClick() {
-    val currentState = _uiState.value
-    if (currentState.password != currentState.confirmPassword) {
-        _uiState.value = currentState.copy(errorMessage = "Passwords do not match")
-        return
-    }
+    fun onSignupClick() {
 
-    _uiState.value = currentState.copy(isLoading = true)
+        val state = _uiState.value
 
-    auth.createUserWithEmailAndPassword(currentState.email, currentState.password)
-        .addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                _uiState.value = currentState.copy(isLoading = false, isSuccess = true)
-            } else {
-                _uiState.value = currentState.copy(
-                    isLoading = false,
-                    errorMessage = task.exception?.message
-                )
-            }
+        if (state.password != state.confirmPassword) {
+            _uiState.value = state.copy(errorMessage = "Passwords do not match")
+            return
         }
-}
 
+        _uiState.value = state.copy(isLoading = true)
 
+        // STEP 1: Create user in FirebaseAuth
+        auth.createUserWithEmailAndPassword(state.email, state.password)
+            .addOnCompleteListener { task ->
+
+                if (task.isSuccessful) {
+
+                    val uid = auth.currentUser!!.uid
+
+                    // STEP 2: Create SkillUser object
+                    val skillUser = SkillUser(
+                        id = uid,
+                        name = state.fullName,
+                        profileImage = "",
+                        teaches = listOf(state.teachSkill),
+                        wantsToLearn = listOf(state.learnSkill),
+                        rating = 0f
+                    )
+
+                    // STEP 3: Save to Realtime Database
+                    database.child(uid).setValue(skillUser)
+                        .addOnCompleteListener { dbTask ->
+
+                            if (dbTask.isSuccessful) {
+
+                                _uiState.value = state.copy(
+                                    isLoading = false,
+                                    isSuccess = true
+                                )
+
+                            } else {
+
+                                _uiState.value = state.copy(
+                                    isLoading = false,
+                                    errorMessage = dbTask.exception?.message
+                                )
+
+                            }
+                        }
+
+                } else {
+
+                    _uiState.value = state.copy(
+                        isLoading = false,
+                        errorMessage = task.exception?.message
+                    )
+
+                }
+            }
+    }
 }

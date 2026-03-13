@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +46,8 @@ import com.example.skillswap.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = viewModel(),navController: NavController) {
     val state by viewModel.state.collectAsState()
+    var errorInEmail by rememberSaveable {  mutableStateOf(false)}
+    var errorInPassword by rememberSaveable {  mutableStateOf(false)}
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -120,6 +123,11 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(),navController: NavContro
                     fontFamily = DmSans
                 )
             },
+            isError = errorInEmail,
+            label = {Text(if(errorInEmail) "Invalid Email"
+            else ""
+            )
+            },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(14.dp),
             singleLine = true,
@@ -149,6 +157,11 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(),navController: NavContro
                     fontFamily = DmSans
                 )
             },
+            isError = errorInPassword,
+            label = {Text(if(errorInPassword) "Invalid password"
+            else ""
+            )
+            },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(14.dp),
             singleLine = true,
@@ -164,13 +177,7 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(),navController: NavContro
         Button(
             onClick = {
                 viewModel.login()
-                if(viewModel.state.value.isSuccess){
-                    navController.navigate("homeScreen")
-                    Log.d("Login Success", "LoginScreen: ")
-                }
-                else {
-                    Log.d("Login Failed", "LoginScreen: ")
-                }
+
                  },
             modifier = Modifier
                 .fillMaxWidth()
@@ -190,6 +197,16 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(),navController: NavContro
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold
             )
+        }
+        LaunchedEffect(state.isSuccess) {
+            if (state.isSuccess) {
+                navController.navigate("homeScreen")
+                Log.d("Login Success", "Navigating to Home")
+            }
+            if (!state.error.isNullOrEmpty()) {
+                errorInEmail = true
+                errorInPassword = true
+            }
         }
         Spacer(modifier = Modifier.height(22.dp))
         Row(

@@ -1,320 +1,402 @@
-
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.skillswap.view.compose
 
-import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+
 import androidx.compose.foundation.border
+
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+
 import androidx.compose.foundation.shape.CircleShape
+
 import androidx.compose.foundation.shape.RoundedCornerShape
+
+import androidx.compose.foundation.rememberScrollState
+
+import androidx.compose.foundation.verticalScroll
+
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+
 import androidx.compose.material.icons.filled.Star
+
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+
+import androidx.compose.runtime.*
+
+import androidx.compose.ui.*
+
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+
+import androidx.compose.ui.unit.*
+
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+
+import androidx.compose.ui.res.painterResource
+
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+
 import com.example.skillswap.R
-import com.example.skillswap.model.ProfileUIData
-import com.example.skillswap.ui.theme.BrownDark
-import com.example.skillswap.ui.theme.SkillTagBackground
-import com.example.skillswap.view.compose.ui.theme.SkillswapappTheme
 
-private val PageBeige = Color(0xFFF2E7DE)
-private val CardWhite = Color(0xFFFFFFFF)
-private val LabelGray = Color(0xFF6B7280)
-private val TitleBlack = Color(0xFF111827)
-private val StarYellow = Color(0xFFFFC107)
-private val RingLavender = Color(0xFFBFA1FF)
-private val BorderGray = Color(0xFFE5E7EB)
+import com.example.skillswap.viewmodel.ProfileViewModel
 
-class ProfilePage : ComponentActivity() {
+import com.example.skillswap.ui.theme.*
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    override fun onCreate(savedInstanceState: Bundle?) {
-
-        super.onCreate(savedInstanceState)
-
-        enableEdgeToEdge()
-
-        setContent {
-
-            SkillswapappTheme {
-
-                val navController = rememberNavController()
-
-                ProfileScreen(
-                    navController = navController,
-                    onBack = { navController.navigate("homeScreen") },
-                    onEdit = { navController.navigate("setting") }
-                )
-            }
-        }
-    }
-}
+@OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
+
 fun ProfileScreen(
+
     navController: NavController,
-    onBack: () -> Unit,
-    onEdit: () -> Unit,
-    modifier: Modifier = Modifier
+
+    viewModel: ProfileViewModel = viewModel()
+
 ) {
 
-    val sample = ProfileUIData(
-        name = "Alex Thompson",
-        rating = 5,
-        canTeach = mutableListOf("Guitar", "Music Theory"),
-        wantToLearn = mutableListOf("Photography", "Video Editing"),
-        photoUri = ""
-    )
+    val state by viewModel.state.collectAsState()
 
     Scaffold(
-        containerColor = PageBeige,
+
+        containerColor = BeigeBackground,
 
         topBar = {
+
             CenterAlignedTopAppBar(
+
                 title = {
+
                     Text(
-                        text = "Profile",
-                        color = TitleBlack,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 25.sp
+
+                        "Profile",
+
+                        fontFamily = Poppins,
+
+                        color = TitleText
+
                     )
+
                 },
+
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+
+                    IconButton(
+
+                        onClick = { navController.navigate("homeScreen") }
+
+                    ) {
+
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = TitleBlack
+
+                            Icons.AutoMirrored.Filled.ArrowBack,
+
+                            contentDescription = null,
+
+                            tint = TitleText
+
                         )
+
                     }
+
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = SkillTagBackground
+
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+
+                    containerColor = CreamSurface
+
                 )
+
             )
+
         },
 
         bottomBar = {
-            SkillSwapBottomBar(navController = navController)
+
+            SkillSwapBottomBar(navController)
+
         }
 
-    ) { inner ->
+    ) { padding ->
 
         Column(
-            modifier = modifier
-                .padding(inner)
-                .fillMaxSize()
+
+            modifier = Modifier
+
+                .padding(padding)
+
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+
+                .fillMaxSize()
+
+                .padding(16.dp),
+
             horizontalAlignment = Alignment.CenterHorizontally
+
         ) {
 
-            ProfileCard(
-                data = sample,
-                onBack = onBack,
-                onEdit = onEdit
-            )
-        }
-    }
-}
+            Card(
 
-@Composable
-private fun ProfileCard(
-    data: ProfileUIData,
-    onBack: () -> Unit,
-    onEdit: () -> Unit,
-) {
+                shape = RoundedCornerShape(20.dp),
 
-    Card(
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = CardWhite),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(vertical = 40.dp)
-    ) {
+                colors = CardDefaults.cardColors(
 
-        Column(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 50.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+                    containerColor = CreamSurface
 
-            Box(
+                ),
+
+                elevation = CardDefaults.cardElevation(8.dp),
+
                 modifier = Modifier
-                    .shadow(6.dp, CircleShape)
-                    .clip(CircleShape)
-                    .background(Color.Transparent)
-                    .border(BorderStroke(3.dp, RingLavender), CircleShape)
+
+                    .fillMaxWidth()
+
+                    .border(1.dp, DividerBeige, RoundedCornerShape(20.dp))
+
             ) {
 
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_background),
-                    contentDescription = "Profile picture",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clip(CircleShape)
-                )
-            }
+                Column(
 
-            Spacer(Modifier.height(25.dp))
+                    modifier = Modifier.padding(24.dp),
 
-            LabeledText("Name")
+                    horizontalAlignment = Alignment.CenterHorizontally
 
-            Text(
-                text = data.name ?: "",
-                color = TitleBlack,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(Modifier.height(18.dp))
-
-            LabeledText("Rating")
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-
-                RatingStars(data.rating ?: 0, 5)
-
-                Spacer(Modifier.width(8.dp))
-
-                Text(
-                    text = "${data.rating}/5",
-                    color = TitleBlack,
-                    fontSize = 18.sp
-                )
-            }
-
-            Spacer(Modifier.height(18.dp))
-
-            LabeledText("Skills I Can Teach")
-
-            Text(
-                text = data.canTeach?.joinToString(", ") ?: "",
-                color = TitleBlack,
-                fontSize = 20.sp,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(Modifier.height(18.dp))
-
-            LabeledText("Skills I Want to Learn")
-
-            Text(
-                text = data.wantToLearn?.joinToString(", ") ?: "",
-                color = TitleBlack,
-                fontSize = 20.sp,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(Modifier.height(28.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-
-                OutlinedButton(
-                    onClick = onBack,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = BrownDark,
-                        contentColor = Color.White
-                    )
                 ) {
-                    Text("Back")
+
+                    Image(
+
+                        painter = painterResource(R.drawable.ic_launcher_background),
+
+                        contentDescription = null,
+
+                        modifier = Modifier
+
+                            .size(140.dp)
+
+                            .clip(CircleShape)
+
+                            .border(3.dp, GoldAccent, CircleShape)
+
+                    )
+
+                    Spacer(Modifier.height(20.dp))
+
+                    Text(
+
+                        text = state.name ?: "",
+
+                        fontSize = 24.sp,
+
+                        fontFamily = Poppins,
+
+                        fontWeight = FontWeight.Bold,
+
+                        color = TextPrimary
+
+                    )
+
+                    Spacer(Modifier.height(10.dp))
+
+                    Row {
+
+                        repeat(5) {
+
+                            Icon(
+
+                                Icons.Default.Star,
+
+                                contentDescription = null,
+
+                                tint =
+
+                                    if (it < (state.rating ?: 0))
+
+                                        GoldAccent
+
+                                    else DividerBeige
+
+                            )
+
+                        }
+
+                    }
+
+                    Spacer(Modifier.height(22.dp))
+
+                    Text(
+
+                        "Skills I Can Teach",
+
+                        fontFamily = Poppins,
+
+                        fontWeight = FontWeight.SemiBold,
+
+                        color = TextPrimary
+
+                    )
+
+                    Spacer(Modifier.height(4.dp))
+
+                    Text(
+
+                        state.canTeach?.joinToString(", ") ?: "",
+
+                        color = TextSecondary,
+
+                        fontFamily = DmSans
+
+                    )
+
+                    Spacer(Modifier.height(18.dp))
+
+                    Text(
+
+                        "Skills I Want to Learn",
+
+                        fontFamily = Poppins,
+
+                        fontWeight = FontWeight.SemiBold,
+
+                        color = TextPrimary
+
+                    )
+
+                    Spacer(Modifier.height(4.dp))
+
+                    Text(
+
+                        state.wantToLearn?.joinToString(", ") ?: "",
+
+                        color = TextSecondary,
+
+                        fontFamily = DmSans
+
+                    )
+
+                    Spacer(Modifier.height(28.dp))
+
+                    Row(
+
+                        modifier = Modifier.fillMaxWidth(),
+
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+
+                    ) {
+
+                        Button(
+
+                            onClick = {
+
+                                navController.navigate("setting")
+
+                            },
+
+                            modifier = Modifier
+
+                                .weight(1f)
+
+                                .height(50.dp),
+
+                            shape = RoundedCornerShape(16.dp),
+
+                            colors = ButtonDefaults.buttonColors(
+
+                                containerColor = BrownPrimary,
+
+                                contentColor = Color.White
+
+                            ),
+
+                            elevation = ButtonDefaults.buttonElevation(
+
+                                defaultElevation = 6.dp
+
+                            )
+
+                        ) {
+
+                            Text(
+
+                                text = "Edit",
+
+                                fontFamily = Poppins,
+
+                                fontWeight = FontWeight.SemiBold
+
+                            )
+
+                        }
+
+                        OutlinedButton(
+
+                            onClick = {
+
+                                viewModel.logout()
+
+                                navController.navigate("loginScreen") {
+
+                                    popUpTo(0)
+
+                                }
+
+                            },
+
+                            modifier = Modifier
+
+                                .weight(1f)
+
+                                .height(50.dp),
+
+                            shape = RoundedCornerShape(16.dp),
+
+                            border = BorderStroke(1.dp, DividerBeige),
+
+                            colors = ButtonDefaults.outlinedButtonColors(
+
+                                containerColor = CreamSurface,
+
+                                contentColor = BrownDark
+
+                            )
+
+                        ) {
+
+                            Text(
+
+                                text = "Logout",
+
+                                fontFamily = Poppins,
+
+                                fontWeight = FontWeight.SemiBold
+
+                            )
+
+                        }
+
+                    }
+
+
                 }
 
-                Button(
-                    onClick = onEdit,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = BrownDark,
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text("Edit")
-                }
             }
+
         }
+
     }
-}
 
-@Composable
-private fun LabeledText(label: String) {
-
-    Text(
-        text = label,
-        color = LabelGray,
-        fontSize = 15.sp,
-        fontWeight = FontWeight.Medium,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 2.dp)
-    )
-}
-
-@Composable
-private fun RatingStars(rating: Int, max: Int) {
-
-    Row {
-
-        repeat(max) { index ->
-
-            val tint = if (index < rating) StarYellow else BorderGray
-
-            Icon(
-                imageVector = Icons.Default.Star,
-                contentDescription = null,
-                tint = tint,
-                modifier = Modifier.size(25.dp)
-            )
-        }
-    }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun ProfileScreenPreview() {
-
-    val navController = rememberNavController()
-
-    SkillswapappTheme {
-
+fun ProfileScreenPreview() {
+    val navController = androidx.navigation.compose.rememberNavController()
+    com.example.skillswap.ui.theme.SkillSwapTheme {
         ProfileScreen(
-            navController = navController,
-            onBack = {},
-            onEdit = {}
+            navController = navController
         )
     }
 }

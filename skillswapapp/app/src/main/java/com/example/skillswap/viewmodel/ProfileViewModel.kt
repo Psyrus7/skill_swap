@@ -1,50 +1,29 @@
-package com.example.skillswap.viewmodel
 
+package com.example.skillswap.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.skillswap.model.ProfileUIData
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class ProfileViewModel : ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        ProfileUIData()
+    private val auth = FirebaseAuth.getInstance()
+
+    private val _state = MutableStateFlow(
+        ProfileUIData(
+            name = "Alex Thompson",
+            rating = 5,
+            canTeach = listOf("Guitar","Music Theory"),
+            wantToLearn = listOf("Photography","Video Editing")
+        )
     )
 
-    val uiState = _uiState.asStateFlow()  // expose read-only
+    val state: StateFlow<ProfileUIData> = _state
 
-    fun onEditClicked() {
-        // TODO: navigate to edit profile or update state
-    }
-
-    fun onBackClicked() {
-        // TODO: handle back navigation if needed
-    }
-
-
-
-    fun updateProfile(
-        name: String?,
-        rating: Int?=null,
-        canTeach: List<String>?,
-        wantToLearn: List<String>?,
-        photoUri: String? = null
-
-    ) {
-
-        val current = _uiState.value
-
-        _uiState.value = current.copy(
-            name      = name        ?: current.name,
-            rating        = rating      ?: current.rating,
-            canTeach    = canTeach?.ifEmpty { null } ?: current.canTeach,
-            wantToLearn = wantToLearn?.ifEmpty { null } ?: current.wantToLearn,
-            photoUri = photoUri ?: current.photoUri
-
-        )
-
+    fun logout(){
+        auth.signOut()
     }
 
 }
-

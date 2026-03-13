@@ -1,394 +1,236 @@
 
-
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.skillswap.view.compose
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.provider.MediaStore
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.skillswap.R
-import com.example.skillswap.ui.theme.BrownDark
-import com.example.skillswap.ui.theme.SkillTagBackground
-import com.example.skillswap.view.compose.ui.theme.SkillswapappTheme
-import com.example.skillswap.viewmodel.ProfileViewModel
+import com.example.skillswap.viewmodel.SettingsViewModel
+import com.example.skillswap.ui.theme.*
 
-private val PageBeige = Color(0xFFF2E7DE)
-private val CardWhite = Color(0xFFFFFFFF)
-private val LabelGray = Color(0xFF6B7280)
-private val TitleBlack = Color(0xFF111827)
-private val RingLavender = Color(0xFFBFA1FF)
-private val BorderGray = Color(0xFFE5E7EB)
-
-class Settings : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            SkillswapappTheme {
-                val navController = rememberNavController()
-                SettingsScreen(
-                    navController = navController,
-                    onBack = { finish() }
-                )
-            }
-        }
-    }
-}
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    viewModel: ProfileViewModel = viewModel(),
-    onBack: () -> Unit
+    viewModel: SettingsViewModel = viewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
 
-    var name by remember(state.name) { mutableStateOf(TextFieldValue(state.name.orEmpty())) }
-    var canTeachText by remember(state.canTeach) {
-        mutableStateOf(TextFieldValue(state.canTeach?.joinToString(", ") ?: ""))
-    }
-    var wantToLearnText by remember(state.wantToLearn) {
-        mutableStateOf(TextFieldValue(state.wantToLearn?.joinToString(", ") ?: ""))
-    }
-    var photoUriStr by remember(state.photoUri) { mutableStateOf(state.photoUri) }
-
-    val photoPicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri: Uri? ->
-        if (uri != null) {
-            photoUriStr = uri.toString()
-        }
-    }
+    var name by remember { mutableStateOf("") }
+    var teach by remember { mutableStateOf("") }
+    var learn by remember { mutableStateOf("") }
 
     Scaffold(
-        containerColor = PageBeige,
+
+        containerColor = BeigeBackground,
+
         topBar = {
+
             CenterAlignedTopAppBar(
+
                 title = {
                     Text(
                         "Settings",
-                        color = TitleBlack,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 25.sp
+                        fontFamily = Poppins,
+                        color = TitleText
                     )
                 },
+
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = { navController.popBackStack() }
+                    ) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = TitleBlack
+                            Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = TitleText
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = SkillTagBackground
+
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = CreamSurface
                 )
+
             )
+
         },
+
         bottomBar = {
-            SkillSwapBottomBar(navController = navController)
+            SkillSwapBottomBar(navController)
         }
-    ) { inner ->
+
+    ) { padding ->
+
         Column(
+
             modifier = Modifier
-                .padding(inner)
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(16.dp),
+
+            verticalArrangement = Arrangement.spacedBy(18.dp)
+
         ) {
+
             Card(
+
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = CardWhite),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+
+                colors = CardDefaults.cardColors(
+                    containerColor = CreamSurface
+                ),
+
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(0.dp, 24.dp)
+                    .border(1.dp, DividerBeige, RoundedCornerShape(20.dp))
+
             ) {
+
                 Column(
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp, vertical = 24.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
 
-                    AvatarEditor(
-                        photoUri = photoUriStr,
-                        onChangePhoto = {
-                            photoPicker.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        }
+                    Text(
+                        text = "Name",
+                        color = TextPrimary,
+                        fontFamily = Poppins
                     )
 
-                    Spacer(Modifier.height(24.dp))
-
-                    Labeled(label = "Name")
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
-                        singleLine = true,
+                        placeholder = {
+                            Text(
+                                "Enter your name",
+                                color = TextHint
+                            )
+                        },
                         modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text("Enter your name") }
+                        shape = RoundedCornerShape(16.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = SearchBackground,
+                            unfocusedContainerColor = SearchBackground,
+                            focusedBorderColor = GoldAccent,
+                            unfocusedBorderColor = SearchBorder,
+                            cursorColor = BrownPrimary
+                        )
                     )
 
-                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "Skills I Can Teach",
+                        color = TextPrimary,
+                        fontFamily = Poppins
+                    )
 
-                    Labeled(label = "Skills I Can Teach")
                     OutlinedTextField(
-                        value = canTeachText,
-                        onValueChange = { canTeachText = it },
+                        value = teach,
+                        onValueChange = { teach = it },
+                        placeholder = {
+                            Text(
+                                "Ex: Guitar, Java",
+                                color = TextHint
+                            )
+                        },
                         modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text("e.g., Guitar, Music Theory") },
-                        maxLines = 4
+                        shape = RoundedCornerShape(16.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = SearchBackground,
+                            unfocusedContainerColor = SearchBackground,
+                            focusedBorderColor = GoldAccent,
+                            unfocusedBorderColor = SearchBorder
+                        )
                     )
 
-                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "Skills I Want To Learn",
+                        color = TextPrimary,
+                        fontFamily = Poppins
+                    )
 
-                    Labeled(label = "Skills I Want to Learn")
                     OutlinedTextField(
-                        value = wantToLearnText,
-                        onValueChange = { wantToLearnText = it },
+                        value = learn,
+                        onValueChange = { learn = it },
+                        placeholder = {
+                            Text(
+                                "Ex: Photography",
+                                color = TextHint
+                            )
+                        },
                         modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text("e.g., Photography, Video Editing") },
-                        maxLines = 4
+                        shape = RoundedCornerShape(16.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = SearchBackground,
+                            unfocusedContainerColor = SearchBackground,
+                            focusedBorderColor = GoldAccent,
+                            unfocusedBorderColor = SearchBorder
+                        )
                     )
 
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    Button(
+
+                        onClick = {
+
+                            viewModel.updateProfile(
+                                name,
+                                teach,
+                                learn
+                            )
+
+                            navController.popBackStack()
+
+                        },
+
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+
+                        shape = RoundedCornerShape(16.dp),
+
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = BrownPrimary
+                        )
+
                     ) {
-                        OutlinedButton(
-                            onClick = onBack,
-                            shape = RoundedCornerShape(12.dp),
-                            border = BorderStroke(1.dp, BorderGray),
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(44.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = Color.White,
-                                containerColor = BrownDark
-                            )
-                        ) {
-                            Text("Cancel", fontWeight = FontWeight.SemiBold)
-                        }
 
-                        Button(
-                            onClick = {
-                                val canTeachList = canTeachText.text.split(",")
-                                    .map { it.trim() }
-                                    .filter { it.isNotEmpty() }
+                        Text(
+                            "Save Changes",
+                            color = androidx.compose.ui.graphics.Color.White,
+                            fontFamily = Poppins
+                        )
 
-                                val wantToLearnList = wantToLearnText.text.split(",")
-                                    .map { it.trim() }
-                                    .filter { it.isNotEmpty() }
-
-                                viewModel.updateProfile(
-                                    name = name.text.ifBlank { null },
-                                    canTeach = canTeachList,
-                                    wantToLearn = wantToLearnList,
-                                    photoUri = photoUriStr
-                                )
-
-                                val activity = context.findActivity()
-                                val result = Intent().apply {
-                                    putExtra("name", name.text.ifBlank { null })
-                                    putStringArrayListExtra("canTeach", ArrayList(canTeachList))
-                                    putStringArrayListExtra("wantToLearn", ArrayList(wantToLearnList))
-                                    putExtra("photoUri", photoUriStr)
-                                }
-                                activity?.setResult(Activity.RESULT_OK, result)
-                                activity?.finish()
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(44.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = BrownDark,
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text("Save", fontWeight = FontWeight.SemiBold)
-                        }
                     }
+
                 }
+
             }
+
         }
-    }
-}
 
+    }
+
+}
+@Preview(showBackground = true)
 @Composable
-private fun Labeled(label: String) {
-    Text(
-        text = label,
-        color = LabelGray,
-        fontSize = 15.sp,
-        fontWeight = FontWeight.Medium,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 6.dp)
-    )
-}
-
-@Composable
-private fun AvatarEditor(
-    photoUri: String?,
-    onChangePhoto: () -> Unit
-) {
-    val context = LocalContext.current
-    val bitmap: Bitmap? by remember(photoUri) {
-        mutableStateOf(
-            photoUri?.let { uriStr ->
-                runCatching {
-                    val uri = Uri.parse(uriStr)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        val source = ImageDecoder.createSource(context.contentResolver, uri)
-                        ImageDecoder.decodeBitmap(source)
-                    } else {
-                        @Suppress("DEPRECATION")
-                        MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-                    }
-                }.getOrNull()
-            }
-        )
-    }
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier
-                .shadow(6.dp, CircleShape, clip = false)
-                .clip(CircleShape)
-                .background(Color.Transparent)
-                .border(BorderStroke(3.dp, RingLavender), CircleShape)
-                .clickable { onChangePhoto() }
-        ) {
-            if (bitmap != null) {
-                Image(
-                    bitmap = bitmap!!.asImageBitmap(),
-                    contentDescription = "Profile photo",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clip(CircleShape)
-                )
-            } else {
-                Image(
-                    painter = androidx.compose.ui.res.painterResource(R.drawable.ic_launcher_background),
-                    contentDescription = "Default profile",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clip(CircleShape)
-                )
-            }
-        }
-        Spacer(Modifier.height(8.dp))
-        Text(
-            "Change photo",
-            color = TitleBlack,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
-                .clickable { onChangePhoto() }
-                .padding(horizontal = 8.dp, vertical = 4.dp)
-        )
-    }
-}
-
-fun Context.findActivity(): Activity? {
-    var ctx = this
-    while (ctx is ContextWrapper) {
-        if (ctx is Activity) return ctx
-        ctx = ctx.baseContext
-    }
-    return null
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFFF2E7DE)
-@Composable
-private fun SettingsPreview() {
-    val navController = rememberNavController()
-    SkillswapappTheme {
+fun SettingsScreenPreview() {
+    val navController = androidx.navigation.compose.rememberNavController()
+    com.example.skillswap.ui.theme.SkillSwapTheme {
         SettingsScreen(
-            navController = navController,
-            onBack = {}
+            navController = navController
         )
     }
 }

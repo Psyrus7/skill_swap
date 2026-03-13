@@ -1,4 +1,5 @@
 package com.example.skillswap.view.compose
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -76,11 +77,9 @@ import com.example.skillswap.ui.theme.BrownPrimary
 import com.example.skillswap.ui.theme.CardTitle
 import com.example.skillswap.ui.theme.CreamSurface
 import com.example.skillswap.ui.theme.DividerBeige
-import com.example.skillswap.ui.theme.DmSans
 import com.example.skillswap.ui.theme.SearchBackground
 import com.example.skillswap.ui.theme.SearchBorder
 import com.example.skillswap.ui.theme.SkillSwapTheme
-import com.example.skillswap.ui.theme.SkillTagBackground
 import com.example.skillswap.ui.theme.SoftBeigeCard
 import com.example.skillswap.ui.theme.StarRatingColor
 import com.example.skillswap.ui.theme.TextHint
@@ -109,7 +108,7 @@ fun SkillSwapHomeScreen(
     navController: NavController
 ) {
     val searchText by viewModel.searchText.collectAsState()
-    val users = viewModel.filteredUsers()
+    val users by viewModel.filteredUsers.collectAsState()
 
     val popularSkills = listOf(
         "Kotlin", "Java", "UI/UX", "Photography", "Cooking", "Public Speaking"
@@ -218,7 +217,9 @@ fun SkillSwapHomeScreen(
                         Spacer(modifier = Modifier.height(14.dp))
 
                         Button(
-                            onClick = { },
+                            onClick = {
+                                viewModel.fetchUsersFromDatabase()
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(52.dp),
@@ -287,7 +288,7 @@ fun SkillSwapHomeScreen(
             }
 
             items(users) { user ->
-                SkillUserCard(user,navController)
+                SkillUserCard(user, navController)
             }
         }
     }
@@ -467,6 +468,7 @@ fun SkillUserCard(
 @Composable
 fun SkillSwapHomeScreenPreview() {
     SkillSwapTheme {
+
 //        SkillSwapHomeScreen()
     }
 }

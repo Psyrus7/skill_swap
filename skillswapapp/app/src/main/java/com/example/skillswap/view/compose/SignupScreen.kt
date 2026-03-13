@@ -1,5 +1,6 @@
 package com.example.skillswap.view.compose
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,8 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -29,14 +30,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skillswap.ui.theme.BeigeBackground
 import com.example.skillswap.ui.theme.BrownPrimary
-import com.example.skillswap.ui.theme.CardBackground
 import com.example.skillswap.ui.theme.TextSecondary
 import com.example.skillswap.viewmodel.SignupViewModel
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.skillswap.R
 import com.example.skillswap.ui.theme.CreamSurface
 import com.example.skillswap.ui.theme.DividerBeige
@@ -45,6 +50,7 @@ import com.example.skillswap.ui.theme.GoldAccent
 import com.example.skillswap.ui.theme.Poppins
 import com.example.skillswap.ui.theme.SearchBackground
 import com.example.skillswap.ui.theme.SearchBorder
+import com.example.skillswap.ui.theme.SkillSwapTheme
 import com.example.skillswap.ui.theme.TextHint
 import com.example.skillswap.ui.theme.TextPrimary
 import com.example.skillswap.ui.theme.TitleText
@@ -53,6 +59,9 @@ import com.example.skillswap.ui.theme.TitleText
 @Composable
 fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavController) {
     val state = viewModel.uiState.collectAsState().value
+    var passwordCheck by remember { mutableStateOf(false) }
+    var confirmPasswordCheck by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -222,13 +231,17 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavCont
             Spacer(Modifier.height(6.dp))
             OutlinedTextField(
                 value = state.password,
-                onValueChange = { viewModel.onPasswordChange(it) },
-                label = {
+                onValueChange = { viewModel.onPasswordChange(it)
+                    passwordCheck=state.password.length<5},
+                isError =passwordCheck ,
+                label = { if(passwordCheck){
+                    Text("Password is too small")
+                }
+                else {
                     Text(
-                        "Create password",
-                        fontFamily = DmSans,
-                        color = TextHint
+                        "Enter Password",
                     )
+                }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -252,13 +265,18 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavCont
             Spacer(Modifier.height(6.dp))
             OutlinedTextField(
                 value = state.confirmPassword,
-                onValueChange = { viewModel.onConfirmPasswordChange(it) },
-                label = {
+                onValueChange = { viewModel.onConfirmPasswordChange(it)
+                    confirmPasswordCheck = state.confirmPassword.equals(state.password)
+                },
+                isError =confirmPasswordCheck ,
+                label = { if(confirmPasswordCheck){
+                    Text("Password is not same")
+                }
+                else {
                     Text(
-                        "Confirm your password",
-                        fontFamily = DmSans,
-                        color = TextHint
+                        "Confirm Password"
                     )
+                }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -274,7 +292,8 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavCont
             )
             Spacer(Modifier.height(22.dp))
             Button(
-                onClick = { viewModel.onSignupClick() },
+                onClick = { viewModel.onSignupClick()
+                          },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = BrownPrimary,
                     contentColor = Color.White
@@ -292,6 +311,20 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavCont
                     fontWeight = FontWeight.SemiBold
                 )
             }
+            LaunchedEffect(state.isSuccess) {
+
+                if (state.isSuccess) {
+
+                    navController.navigate("loginScreen") {
+
+                    }
+
+                    Log.d("Login Success", "Navigating to Home")
+
+                }
+
+            }
+
             Spacer(Modifier.height(12.dp))
             Row {
                 Text(
@@ -313,10 +346,14 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavCont
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun SignupScreenPreview(){
-//    SignupScreen( )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun SignupScreenPreview() {
+//    val navController = rememberNavController()
+//
+//    SkillSwapTheme {
+//        SignupScreen(navController = navController)
+//    }
+//}
 
 

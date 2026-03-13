@@ -1,6 +1,3 @@
-
-
-
 package com.example.skillswap
 
 import android.annotation.SuppressLint
@@ -18,45 +15,61 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.skillswap.ui.theme.SkillSwapTheme
-import com.example.skillswap.view.compose.LoginScreen
-import com.example.skillswap.view.compose.MatchedScreenCard
-import com.example.skillswap.view.compose.MessageScreen
-import com.example.skillswap.view.compose.MessagesListScreen
-import com.example.skillswap.view.compose.ProfileScreen
-import com.example.skillswap.view.compose.SettingsScreen
-import com.example.skillswap.view.compose.SignupAndLoginScreen
-import com.example.skillswap.view.compose.SignupScreen
-import com.example.skillswap.view.compose.SkillSwapHomeScreen
-import com.example.skillswap.view.compose.notifications.EmptyNotificationsScreen
-import com.example.skillswap.view.compose.notifications.NotificationsListScreen
-import com.example.skillswap.view.compose.notifications.sampleNotifications
+import com.example.skillswap.view.compose.*
+import com.example.skillswap.view.compose.notifications.*
 import com.example.skillswap.viewmodel.HomeScreenViewModel
 import com.example.skillswap.viewmodel.LoginViewModel
 import com.example.skillswap.viewmodel.SignupViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
+
         setContent {
+
             SkillSwapTheme {
+
                 Scaffold(modifier = Modifier.fillMaxSize()) {
+
                     AppNavigation()
+
                 }
+
             }
+
         }
+
     }
+
 }
 
 @Composable
 fun AppNavigation() {
+
     val navController = rememberNavController()
+
+    val auth = FirebaseAuth.getInstance()
+
+    // Check if user already logged in
+    val startScreen =
+        if (auth.currentUser != null) {
+            "homeScreen"
+        } else {
+            "signupAndLoginScreen"
+        }
 
     NavHost(
         navController = navController,
-        startDestination = "signupAndLoginScreen"
+        startDestination = startScreen
     ) {
+
         composable("signupAndLoginScreen") {
             SignupAndLoginScreen(navController)
         }
@@ -73,6 +86,7 @@ fun AppNavigation() {
 
         composable("homeScreen") {
             val viewModel: HomeScreenViewModel = viewModel()
+
             SkillSwapHomeScreen(
                 modifier = Modifier,
                 viewModel = viewModel,
@@ -81,11 +95,11 @@ fun AppNavigation() {
         }
 
         composable("messageListScreen") {
-            MessagesListScreen(navController = navController)
+            MessagesListScreen(navController)
         }
 
         composable("chatScreen") {
-            MessageScreen(navController = navController)
+            MessageScreen(navController)
         }
 
         composable("matchedScreenCard") {
@@ -100,20 +114,15 @@ fun AppNavigation() {
         }
 
         composable("profileScreen") {
-            ProfileScreen(
-                navController = navController,
-                onBack = { navController.popBackStack() },
-                onEdit = { navController.navigate("setting") }
-            )
+            ProfileScreen(navController)
         }
 
         composable("notificationScreen") {
+
             val items = sampleNotifications()
 
             if (items.isEmpty()) {
-                EmptyNotificationsScreen(
-                    navController = navController
-                )
+                EmptyNotificationsScreen(navController)
             } else {
                 NotificationsListScreen(
                     navController = navController,
@@ -122,20 +131,23 @@ fun AppNavigation() {
             }
         }
 
-
         composable("setting") {
-            SettingsScreen(
-                navController = navController,
-                onBack = { navController.popBackStack() }
-            )
+            SettingsScreen(navController)
         }
     }
 }
 
+
+
 @Preview(showBackground = true)
+
 @Composable
 fun GreetingPreview() {
+
     SkillSwapTheme {
+
         AppNavigation()
+
     }
+
 }
