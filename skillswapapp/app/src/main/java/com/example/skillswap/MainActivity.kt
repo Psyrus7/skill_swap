@@ -27,8 +27,8 @@ import com.example.skillswap.view.compose.SignupAndLoginScreen
 import com.example.skillswap.view.compose.SignupScreen
 import com.example.skillswap.view.compose.SkillSwapHomeScreen
 import com.example.skillswap.view.compose.notifications.EmptyNotificationsScreen
+import com.example.skillswap.view.compose.notifications.NotificationScreen
 import com.example.skillswap.view.compose.notifications.NotificationsListScreen
-import com.example.skillswap.view.compose.notifications.sampleNotifications
 import com.example.skillswap.viewmodel.HomeScreenViewModel
 import com.example.skillswap.viewmodel.LoginViewModel
 import com.example.skillswap.viewmodel.SignupViewModel
@@ -50,83 +50,133 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
-    val auth = FirebaseAuth.getInstance()
 
-    val startScreen =
-        if (auth.currentUser != null) "homeScreen" else "signupAndLoginScreen"
+fun AppNavigation() {
+
+    val navController = rememberNavController()
 
     NavHost(
+
         navController = navController,
-        startDestination = startScreen
+
+        startDestination = "signupAndLoginScreen"
+
     ) {
 
         composable("signupAndLoginScreen") {
+
             SignupAndLoginScreen(navController)
+
         }
 
         composable("signupScreen") {
+
             val viewModel: SignupViewModel = viewModel()
+
             SignupScreen(viewModel, navController)
+
         }
 
         composable("loginScreen") {
+
             val viewModel: LoginViewModel = viewModel()
+
             LoginScreen(viewModel, navController)
+
         }
 
         composable("homeScreen") {
+
             val viewModel: HomeScreenViewModel = viewModel()
+
             SkillSwapHomeScreen(
+
                 modifier = Modifier,
+
                 viewModel = viewModel,
+
                 navController = navController
+
             )
+
         }
 
         composable("messageListScreen") {
-            MessagesListScreen(navController)
+
+            MessagesListScreen(navController = navController)
+
         }
 
-        composable(
-            route = "chat/{conversationId}/{userName}",
-            arguments = listOf(
-                navArgument("conversationId") { type = NavType.StringType },
-                navArgument("userName") { type = NavType.StringType }
+        composable("chat/{conversationId}/{userName}") { backStackEntry ->
+
+            val conversationId =
+
+                backStackEntry.arguments?.getString("conversationId") ?: ""
+
+            val userName =
+
+                backStackEntry.arguments?.getString("userName") ?: ""
+
+            MessageScreen(
+
+                navController = navController,
+
+                conversationId = conversationId,
+
+                userName = userName
+
             )
-        ) { backStackEntry ->
-            val conversationId = backStackEntry.arguments?.getString("conversationId") ?: ""
-            val userName = backStackEntry.arguments?.getString("userName") ?: ""
-            MessageScreen(navController, conversationId, userName)
+
         }
 
         composable("matchedScreenCard") {
+
             MatchedScreenCard(
-                navController, "DFAS",
+
+                navController = navController,
+
+                name = "DFAS",
+
+                receiverId = "sampleReceiverId",
+
                 onSendRequest = {},
+
                 onMessage = {}
+
             )
+
         }
 
         composable("profileScreen") {
-            ProfileScreen(navController = navController)
+
+            ProfileScreen(
+
+                navController = navController
+
+            )
+
         }
 
         composable("notificationScreen") {
-            val items = sampleNotifications()
-            if (items.isEmpty()) {
-                EmptyNotificationsScreen(navController = navController)
-            } else {
-                NotificationsListScreen(navController = navController, items = items)
-            }
+
+            NotificationScreen(navController = navController)
+
         }
 
         composable("setting") {
-            SettingsScreen(navController = navController)
+
+            SettingsScreen(
+
+                navController = navController
+
+            )
+
         }
+
     }
+
 }
+
 
 @Preview(showBackground = true)
 @Composable
