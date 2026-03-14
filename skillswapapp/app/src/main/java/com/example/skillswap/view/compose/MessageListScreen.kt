@@ -53,7 +53,7 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessagesListScreen(navController: NavController, viewModel: MessagesViewModel = viewModel()) {
-    var selectedFilter by remember { mutableStateOf("All") }
+    //var selectedFilter by remember { mutableStateOf("All") }
     val conversations by viewModel.conversations.collectAsState()
     var search by remember {mutableStateOf("")}
     Scaffold(
@@ -115,26 +115,26 @@ fun MessagesListScreen(navController: NavController, viewModel: MessagesViewMode
                     placeholder = { Text("Search", style = MaterialTheme.typography.titleMedium) },
                     modifier = Modifier.fillMaxWidth()
                 )
-                Row(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    listOf("All", "Contacts", "Unknown", "New").forEach { filter ->
-                        val isSelected = filter == selectedFilter
-                        TextButton(
-                            onClick = { selectedFilter = filter },
-                            colors = ButtonDefaults.textButtonColors(
-                                containerColor = if (isSelected) Color.Black else Color.Transparent,
-                                contentColor = if (isSelected) Color.White else Color.Black
-                            ),
-                            shape = ButtonDefaults.elevatedShape
-                        ) {
-                            Text(filter, style = MaterialTheme.typography.bodyMedium)
-                        }
-                    }
-                }
+//                Row(
+//                    modifier = Modifier
+//                        .padding(top = 8.dp)
+//                        .fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.SpaceEvenly
+//                ) {
+//                    listOf("All", "Contacts", "Unknown", "New").forEach { filter ->
+//                        val isSelected = filter == selectedFilter
+//                        TextButton(
+//                            onClick = { selectedFilter = filter },
+//                            colors = ButtonDefaults.textButtonColors(
+//                                containerColor = if (isSelected) Color.Black else Color.Transparent,
+//                                contentColor = if (isSelected) Color.White else Color.Black
+//                            ),
+//                            shape = ButtonDefaults.elevatedShape
+//                        ) {
+//                            Text(filter, style = MaterialTheme.typography.bodyMedium)
+//                        }
+//                    }
+//                }
             }
 
             // Conversation list
