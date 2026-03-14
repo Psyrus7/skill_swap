@@ -101,7 +101,7 @@ fun MessageScreen(
 
     val messages by viewModel.messages.collectAsState()
     val currentUserId = FirebaseAuth.getInstance().uid
-    val currentUserName = FirebaseAuth.getInstance().currentUser?.displayName?:"You"
+    val currentUserName = FirebaseAuth.getInstance().currentUser?.displayName?: FirebaseAuth.getInstance().currentUser?.email?:"Unknown User"
     val context = LocalContext.current
     var messageText by remember { mutableStateOf("") }
     LaunchedEffect(conversationId) {

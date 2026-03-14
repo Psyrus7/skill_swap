@@ -1,6 +1,7 @@
 package com.example.skillswap.view.compose.notifications
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 
 import androidx.compose.foundation.layout.Arrangement
 
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 
 import androidx.compose.foundation.layout.padding
 
@@ -27,6 +29,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 
@@ -71,6 +74,7 @@ import com.example.skillswap.model.SwapRequestNotification
 import com.example.skillswap.ui.theme.BeigeBackground
 
 import com.example.skillswap.ui.theme.BrownPrimary
+import com.example.skillswap.ui.theme.CreamSurface
 
 import com.example.skillswap.ui.theme.DividerBeige
 
@@ -173,101 +177,127 @@ fun NotificationsListScreen(
 
             items(requests) { request ->
 
-                Row(
+                Column(
 
                     modifier = Modifier
 
                         .fillMaxWidth()
 
-                        .padding(16.dp),
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
 
-                    verticalAlignment = Alignment.Top
+                        .background(CreamSurface, shape = RoundedCornerShape(16.dp))
+
+                        .border(1.dp, DividerBeige, RoundedCornerShape(16.dp))
+
+                        .padding(16.dp)
 
                 ) {
 
-                    Box(
+                    Row(verticalAlignment = Alignment.CenterVertically) {
 
-                        modifier = Modifier
+                        Box(
 
-                            .size(40.dp)
+                            modifier = Modifier
 
-                            .clip(CircleShape)
+                                .size(40.dp)
 
-                            .background(SoftBeigeCard),
+                                .clip(CircleShape)
 
-                        contentAlignment = Alignment.Center
+                                .background(SoftBeigeCard),
 
-                    ) {
+                            contentAlignment = Alignment.Center
 
-                        Text("🔔")
+                        ) {
+
+                            Text("🔔")
+
+                        }
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Column(modifier = Modifier.weight(1f)) {
+
+                            Text(
+
+                                text = "${request.senderName} sent you a skill swap request",
+
+                                color = TextPrimary,
+
+                                style = MaterialTheme.typography.bodyMedium
+
+                            )
+
+                            Spacer(modifier = Modifier.height(4.dp))
+
+                            Text(
+
+                                text = "Status: ${request.status}",
+
+                                color = TextHint,
+
+                                style = MaterialTheme.typography.bodySmall
+
+                            )
+
+                        }
 
                     }
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                    if (request.status == "pending") {
 
-                    Column(modifier = Modifier.weight(1f)) {
+                        Spacer(modifier = Modifier.height(12.dp))
 
-                        Text(
+                        Row(
 
-                            text = "${request.senderName} sent you a skill swap request",
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
 
-                            color = TextPrimary,
+                        ) {
 
-                            style = MaterialTheme.typography.bodyMedium
+                            Button(
 
-                        )
+                                onClick = {
 
-                        Spacer(modifier = Modifier.padding(4.dp))
+                                    onAccept(request)
 
-                        Text(
+                                    navController.navigate("homeScreen") {
 
-                            text = "Status: ${request.status}",
+                                        popUpTo("homeScreen") { inclusive = false }
 
-                            color = TextHint,
+                                    }
 
-                            style = MaterialTheme.typography.bodySmall
+                                },
 
-                        )
+                                colors = ButtonDefaults.buttonColors(
 
-                        if (request.status == "pending") {
+                                    containerColor = BrownPrimary,
 
-                            Row(
+                                    contentColor = Color.White
 
-                                modifier = Modifier.padding(top = 8.dp),
+                                ),
 
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                shape = RoundedCornerShape(12.dp)
 
                             ) {
 
-                                Button(
-                                    onClick = {
-                                        onAccept(request)
-                                        navController.navigate("homeScreen") {
-                                            popUpTo("notificationScreen") { inclusive = true }
-                                        }
-                                    },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = BrownPrimary,
-                                        contentColor = Color.White
-                                    )
-                                ) {
-                                    Text("Accept")
-                                }
-                                OutlinedButton(
+                                Text("Accept")
 
-                                    onClick = { onDecline(request) }
+                            }
 
-                                ) {
+                            OutlinedButton(
 
-                                    Text(
+                                onClick = { onDecline(request) },
 
-                                        text = "Decline",
+                                shape = RoundedCornerShape(12.dp)
 
-                                        color = TextSecondary
+                            ) {
 
-                                    )
+                                Text(
 
-                                }
+                                    text = "Decline",
+
+                                    color = TextSecondary
+
+                                )
 
                             }
 
@@ -277,7 +307,10 @@ fun NotificationsListScreen(
 
                 }
 
-                Divider(color = DividerBeige)
+
+
+
+            Divider(color = DividerBeige)
 
             }
 
