@@ -27,6 +27,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 
 import androidx.compose.material3.Button
 
@@ -37,6 +39,8 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 
 import androidx.compose.material3.OutlinedButton
 
@@ -106,6 +110,36 @@ fun NotificationsListScreen(
 
                 title = { Text("Notifications", color = TextPrimary) },
 
+                navigationIcon = {
+
+                    IconButton (
+
+                        onClick = {
+
+                            navController.navigate("homeScreen") {
+
+                                popUpTo("notificationScreen") { inclusive = true }
+
+                            }
+
+                        }
+
+                    ) {
+
+                        Icon(
+
+                            imageVector = Icons.Default.ArrowBack,
+
+                            contentDescription = "Back",
+
+                            tint = TextPrimary
+
+                        )
+
+                    }
+
+                },
+
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
 
                     containerColor = BeigeBackground
@@ -113,6 +147,7 @@ fun NotificationsListScreen(
                 )
 
             )
+
 
         },
 
@@ -205,23 +240,19 @@ fun NotificationsListScreen(
                             ) {
 
                                 Button(
-
-                                    onClick = { onAccept(request) },
-
+                                    onClick = {
+                                        onAccept(request)
+                                        navController.navigate("homeScreen") {
+                                            popUpTo("notificationScreen") { inclusive = true }
+                                        }
+                                    },
                                     colors = ButtonDefaults.buttonColors(
-
                                         containerColor = BrownPrimary,
-
                                         contentColor = Color.White
-
                                     )
-
                                 ) {
-
                                     Text("Accept")
-
                                 }
-
                                 OutlinedButton(
 
                                     onClick = { onDecline(request) }
