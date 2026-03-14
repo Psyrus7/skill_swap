@@ -5,7 +5,7 @@ data class SwapRequestNotification(
     val senderId: String = "",
     val senderName: String = "",
     val receiverId: String = "",
+    val receiverName: String = "",
     val message: String = "",
-    val receiverName:String ="",
-    val status: String = "pending"
+    val status: String = "pending" // "pending", "accepted", "declined"
 )

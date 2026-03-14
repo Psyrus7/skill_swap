@@ -242,7 +242,6 @@ fun MessageScreen(
             )
 
             LazyColumn(
-                reverseLayout = true,
                 modifier = Modifier
 
                     .weight(1f)

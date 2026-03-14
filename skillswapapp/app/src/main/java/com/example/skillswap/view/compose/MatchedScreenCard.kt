@@ -45,6 +45,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Alignment
 
@@ -143,6 +148,27 @@ fun MatchedScreenCard(
     }
 
 ) {
+    var requestStatus by rememberSaveable { mutableStateOf("none") }
+    LaunchedEffect(receiverId) {
+        val currentUser = FirebaseAuth.getInstance().currentUser ?: return@LaunchedEffect
+        val db = FirebaseDatabase.getInstance().getReference("requests")
+        db.orderByChild("senderId")
+            .equalTo(currentUser.uid)
+            .addValueEventListener(object : com.google.firebase.database.ValueEventListener {
+                override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                    requestStatus = "none"
+                    for (child in snapshot.children) {
+                        val receiver = child.child("receiverId").value?.toString()
+                        if (receiver == receiverId) {
+                            requestStatus = child.child("status").value?.toString() ?: "pending"
+                            break
+                        }
+                    }
+                }
+                override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
+                }
+            })
+    }
 
     Box(
 
@@ -221,7 +247,6 @@ fun MatchedScreenCard(
                 )
 
                 Spacer(Modifier.height(20.dp))
-
                 Button(
 
                     onClick = {
@@ -254,11 +279,15 @@ fun MatchedScreenCard(
 
                             .addOnSuccessListener {
 
+                                requestStatus = "pending"
+
                                 onSendRequest()
 
                             }
 
                     },
+
+                    enabled = requestStatus == "none",
 
                     modifier = Modifier.width(240.dp),
 
@@ -272,9 +301,16 @@ fun MatchedScreenCard(
 
                 ) {
 
-                    Text("Send Request")
+                    Text(
+                        when(requestStatus){
+                            "accepted" -> "Message"
+                            "pending" -> "Waiting for approval"
+                            else -> "Send Request"
+                        })
+
 
                 }
+
 
                 Spacer(Modifier.height(12.dp))
 
@@ -282,21 +318,42 @@ fun MatchedScreenCard(
 
                     onClick = onMessage,
 
+                    enabled = requestStatus == "accepted",
+
                     modifier = Modifier.width(240.dp),
 
                     colors = ButtonDefaults.buttonColors(
 
                         containerColor = ButtonSecondary,
 
-                        contentColor = TextPrimary
+                        contentColor = TextPrimary,
+
+                        disabledContainerColor = ButtonSecondary.copy(alpha = 0.5f),
+
+                        disabledContentColor = TextPrimary.copy(alpha = 0.5f)
 
                     )
 
                 ) {
 
-                    Text("Message")
+                    Text(
+
+                        when (requestStatus) {
+
+                            "accepted" -> "Message"
+
+                            "pending" -> "Waiting for approval"
+
+                            else -> "Message Locked"
+
+                        }
+
+                    )
 
                 }
+
+
+
 
             }
 

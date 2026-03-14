@@ -62,9 +62,10 @@ fun AppNavigation() {
 
     NavHost(
 
+
         navController = navController,
 
-        startDestination = "signupAndLoginScreen"
+        startDestination = startScreen
 
     ) {
 

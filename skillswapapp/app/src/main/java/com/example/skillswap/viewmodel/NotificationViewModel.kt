@@ -30,6 +30,7 @@ class NotificationViewModel : ViewModel() {
 
     }
 
+
     private fun listenForRequests() {
 
         val currentUserId = auth.currentUser?.uid ?: return
