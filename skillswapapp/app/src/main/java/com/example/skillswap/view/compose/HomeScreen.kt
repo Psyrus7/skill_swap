@@ -1,3 +1,4 @@
+
 package com.example.skillswap.view.compose
 
 import android.net.Uri
@@ -6,7 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,10 +30,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Star
-
-
-import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -45,7 +43,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -63,21 +60,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.skillswap.R
 import com.example.skillswap.model.SkillUser
 import com.example.skillswap.ui.theme.BeigeBackground
 import com.example.skillswap.ui.theme.BrownPrimary
 import com.example.skillswap.ui.theme.CardTitle
 import com.example.skillswap.ui.theme.CreamSurface
 import com.example.skillswap.ui.theme.DividerBeige
+import com.example.skillswap.ui.theme.GoldAccent
 import com.example.skillswap.ui.theme.SearchBackground
 import com.example.skillswap.ui.theme.SearchBorder
 import com.example.skillswap.ui.theme.SkillSwapTheme
@@ -95,8 +89,6 @@ class HomeScreen : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SkillSwapTheme {
-//                SkillSwapHomeScreen()
-
             }
         }
     }
@@ -111,10 +103,7 @@ fun SkillSwapHomeScreen(
 ) {
     val searchText by viewModel.searchText.collectAsState()
     val users by viewModel.filteredUsers.collectAsState()
-
-    val popularSkills = listOf(
-        "Kotlin", "Java", "UI/UX", "Photography", "Cooking", "Public Speaking"
-    )
+    var showRecommendedSection by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -136,8 +125,6 @@ fun SkillSwapHomeScreen(
                             )
                         }
                     },
-
-
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = CreamSurface
                     )
@@ -148,7 +135,6 @@ fun SkillSwapHomeScreen(
         bottomBar = {
             SkillSwapBottomBar(navController)
         }
-
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -158,7 +144,6 @@ fun SkillSwapHomeScreen(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -220,6 +205,7 @@ fun SkillSwapHomeScreen(
 
                         Button(
                             onClick = {
+                                showRecommendedSection = true
                                 viewModel.fetchUsersFromDatabase()
                             },
                             modifier = Modifier
@@ -241,51 +227,27 @@ fun SkillSwapHomeScreen(
                                 style = MaterialTheme.typography.labelLarge
                             )
                         }
-
-                        Spacer(modifier = Modifier.height(14.dp))
-
-                        Row(
-                            modifier = Modifier.horizontalScroll(rememberScrollState()),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            popularSkills.forEach { skill ->
-                                Surface(
-                                    shape = RoundedCornerShape(50.dp),
-                                    color = Color.White,
-                                    border = BorderStroke(1.dp, SearchBorder)
-                                ) {
-                                    Text(
-                                        text = skill,
-                                        color = TextPrimary,
-                                        style = MaterialTheme.typography.labelMedium,
-                                        modifier = Modifier.padding(
-                                            horizontal = 14.dp,
-                                            vertical = 8.dp
-                                        )
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(4.dp))
-                            }
-                        }
                     }
                 }
             }
 
-            item {
-                Column {
-                    Text(
-                        text = "Recommended mentors",
-                        color = CardTitle,
-                        style = MaterialTheme.typography.titleMedium
-                    )
+            if (showRecommendedSection) {
+                item {
+                    Column {
+                        Text(
+                            text = "Recommended mentors",
+                            color = CardTitle,
+                            style = MaterialTheme.typography.titleMedium
+                        )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
 
-                    Text(
-                        text = "People who can help you grow your skills",
-                        color = TextHint,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                        Text(
+                            text = "People who can help you grow your skills",
+                            color = TextHint,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
             }
 
@@ -295,7 +257,6 @@ fun SkillSwapHomeScreen(
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -313,38 +274,43 @@ fun SkillUserCard(
         border = BorderStroke(1.dp, DividerBeige)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    modifier = Modifier.size(78.dp),
-                    contentAlignment = Alignment.BottomEnd
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .border(3.dp, GoldAccent, CircleShape)
+                        .background(CreamSurface),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                        contentDescription = user.name,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape)
-                            .border(2.dp, Color.White, CircleShape),
-                        contentScale = ContentScale.Crop
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Profile Image",
+                        modifier = Modifier.size(80.dp),
+                        tint = DividerBeige
                     )
+
                     Box(
                         modifier = Modifier
+                            .align(Alignment.BottomEnd)
                             .size(16.dp)
                             .clip(CircleShape)
                             .background(Color(0xFF4CAF50))
                             .border(2.dp, Color.White, CircleShape)
                     )
                 }
+
                 Spacer(modifier = Modifier.width(14.dp))
+
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = user.name,
                         color = CardTitle,
                         style = MaterialTheme.typography.titleMedium
                     )
+
                     Spacer(modifier = Modifier.height(4.dp))
+
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Default.Star,
@@ -359,7 +325,9 @@ fun SkillUserCard(
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
+
                     Spacer(modifier = Modifier.height(6.dp))
+
                     Text(
                         text = "Ready to teach and collaborate",
                         color = TextHint,
@@ -368,8 +336,10 @@ fun SkillUserCard(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
+
                 val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
                 var showSheet by remember { mutableStateOf(false) }
+
                 Button(
                     onClick = { showSheet = true },
                     shape = RoundedCornerShape(16.dp),
@@ -383,6 +353,7 @@ fun SkillUserCard(
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
+
                 if (showSheet) {
                     ModalBottomSheet(
                         onDismissRequest = { showSheet = false },
@@ -417,13 +388,17 @@ fun SkillUserCard(
                     }
                 }
             }
+
             Spacer(modifier = Modifier.height(16.dp))
+
             Text(
                 text = "Teaches",
                 color = CardTitle,
                 style = MaterialTheme.typography.titleSmall
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -444,13 +419,17 @@ fun SkillUserCard(
                     Spacer(modifier = Modifier.width(4.dp))
                 }
             }
+
             Spacer(modifier = Modifier.height(12.dp))
+
             Text(
                 text = "Wants to learn",
                 color = CardTitle,
                 style = MaterialTheme.typography.titleSmall
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -479,7 +458,5 @@ fun SkillUserCard(
 @Composable
 fun SkillSwapHomeScreenPreview() {
     SkillSwapTheme {
-
-//        SkillSwapHomeScreen()
     }
 }
