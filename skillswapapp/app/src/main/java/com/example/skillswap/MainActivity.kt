@@ -52,8 +52,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 
 fun AppNavigation() {
-
     val navController = rememberNavController()
+    val auth = FirebaseAuth.getInstance()
+
+    val startScreen =
+        if (auth.currentUser != null) "homeScreen" else "signupAndLoginScreen"
+
+
 
     NavHost(
 
