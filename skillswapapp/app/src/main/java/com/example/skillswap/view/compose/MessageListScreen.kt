@@ -1,11 +1,5 @@
 package com.example.skillswap.view.compose
 
-import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,19 +37,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.skillswap.R
 import com.example.skillswap.model.Conversation
 import com.example.skillswap.ui.theme.BeigeBackground
 import com.example.skillswap.ui.theme.CreamSurface
-import com.example.skillswap.ui.theme.SkillSwapTheme
 import com.example.skillswap.ui.theme.TextPrimary
 import com.example.skillswap.viewmodel.MessagesViewModel
+import java.util.Date
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +55,7 @@ import com.example.skillswap.viewmodel.MessagesViewModel
 fun MessagesListScreen(navController: NavController, viewModel: MessagesViewModel = viewModel()) {
     var selectedFilter by remember { mutableStateOf("All") }
     val conversations by viewModel.conversations.collectAsState()
-
+    var search by remember {mutableStateOf("")}
     Scaffold(
         bottomBar = {
             SkillSwapBottomBar(navController)
@@ -118,8 +110,8 @@ fun MessagesListScreen(navController: NavController, viewModel: MessagesViewMode
             // Search + Filters
             Column(modifier = Modifier.padding(8.dp)) {
                 TextField(
-                    value = "",
-                    onValueChange = {},
+                    value = search,
+                    onValueChange = {search=it},
                     placeholder = { Text("Search", style = MaterialTheme.typography.titleMedium) },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -153,7 +145,7 @@ fun MessagesListScreen(navController: NavController, viewModel: MessagesViewMode
             ) {
                 items(conversations) { convo ->
                     ConversationItem(convo = convo, onClick = {
-                        navController.navigate("chat/${convo.id}")
+                        navController.navigate("chat/${convo.id}/${convo.otherUserName}")
                     })
                 }
             }

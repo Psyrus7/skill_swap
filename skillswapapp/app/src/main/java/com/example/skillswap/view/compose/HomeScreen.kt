@@ -396,20 +396,22 @@ fun SkillUserCard(
                             MatchedScreenCard(
                                 navController = navController,
                                 name = user.name,
-                                receiverId = user.id,
                                 onSendRequest = {
                                     showSheet = false
                                 },
                                 onMessage = {
                                     showSheet = false
-                                    val currentUserId = FirebaseAuth.getInstance().uid ?: return@MatchedScreenCard
+                                    val currentUserId =
+                                        FirebaseAuth.getInstance().uid ?: return@MatchedScreenCard
                                     val otherUserId = user.id
                                     val conversationId = listOf(currentUserId, otherUserId)
                                         .sorted()
                                         .joinToString("_")
+
                                     val encodedName = Uri.encode(user.name)
                                     navController.navigate("chat/$conversationId/$encodedName")
-                                }
+                                },
+                                receiverId = user.id
                             )
                         }
                     }

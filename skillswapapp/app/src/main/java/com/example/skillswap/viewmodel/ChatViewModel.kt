@@ -21,18 +21,20 @@ class ChatViewModel : ViewModel() {
 
     }
 
-    fun sendMessage(text: String, conversationId: String, senderId: String) {
-
+    fun sendMessage(
+        text: String,
+        conversationId: String,
+        senderId: String,
+        currentUserName: String,
+        otherUserName: String
+    ) {
         if (text.isBlank()) return
-
         val message = ChatMessage(
             conversationId = conversationId,
             senderId = senderId,
-            text = text,
-            timestamp = System.currentTimeMillis()
+            text = text
         )
-
-        repository.sendMessage(message)
+        repository.sendMessage(message, currentUserName, otherUserName)
     }
 }
 

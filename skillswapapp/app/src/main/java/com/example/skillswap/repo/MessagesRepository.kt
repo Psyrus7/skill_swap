@@ -12,20 +12,25 @@ class MessagesRepository {
         userId: String,
         onUpdate: (List<Conversation>) -> Unit
     ) {
-
         db.collection("conversations")
             .whereArrayContains("participants", userId)
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
-
                 if (error != null) return@addSnapshotListener
 
-                val conversations = snapshot?.documents?.mapNotNull {
+                val conversations = snapshot?.documents?.mapNotNull { doc ->
+                    val convo = doc.toObject(Conversation::class.java) ?: return@mapNotNull null
 
-                    it.toObject(Conversation::class.java)?.copy(
-                        id = it.id
+                    // Pick the OTHER person's name, not the current user's
+                    val otherUserId = convo.participants.firstOrNull { it != userId } ?: ""
+                    val otherUserName = convo.userNames[otherUserId] ?: "Unknown"
+                    val otherUserProfile = convo.userProfiles[otherUserId]?:""
+
+                    convo.copy(
+                        id = doc.id,
+                        otherUserName = otherUserName,
+                        otherUserProfile = otherUserProfile// now correctly resolved per viewer
                     )
-
                 } ?: emptyList()
 
                 onUpdate(conversations)

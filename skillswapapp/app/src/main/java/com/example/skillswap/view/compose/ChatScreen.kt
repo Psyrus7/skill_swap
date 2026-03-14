@@ -61,15 +61,11 @@ import androidx.compose.ui.res.painterResource
 
 import androidx.compose.ui.text.font.FontWeight
 
-import androidx.compose.ui.tooling.preview.Preview
-
 import androidx.compose.ui.unit.dp
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import androidx.navigation.NavController
-
-import androidx.navigation.compose.rememberNavController
 
 import com.example.skillswap.R
 
@@ -85,32 +81,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class ChatScreen : ComponentActivity() {
-
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-
-        super.onCreate(savedInstanceState)
-
-        enableEdgeToEdge()
-
-        setContent {
-
-            SkillSwapTheme {
-
-                // Navigation handled from MainActivity
-
-            }
-
-        }
-
-    }
-
-}
-fun formatTime(timestamp: Long): String {
-    val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-    return sdf.format(Date(timestamp))
+fun formatTime(date: Date?): String {
+    if(date==null) return ""
+    val sdf = SimpleDateFormat("hh:mm a" , Locale.getDefault())
+    return sdf.format(date)
 }
 @OptIn(ExperimentalMaterial3Api::class)
 
@@ -127,6 +101,7 @@ fun MessageScreen(
 
     val messages by viewModel.messages.collectAsState()
     val currentUserId = FirebaseAuth.getInstance().uid
+    val currentUserName = FirebaseAuth.getInstance().currentUser?.displayName?:"You"
     val context = LocalContext.current
     var messageText by remember { mutableStateOf("") }
     LaunchedEffect(conversationId) {
@@ -267,7 +242,7 @@ fun MessageScreen(
             )
 
             LazyColumn(
-
+                reverseLayout = true,
                 modifier = Modifier
 
                     .weight(1f)
@@ -325,9 +300,10 @@ fun MessageScreen(
                     return@IconButton
                     viewModel.sendMessage(
                         text = messageText,
-                        conversationId=conversationId,
-                        senderId=senderId
-                    )
+                        conversationId = conversationId,
+                        senderId = senderId,
+                        currentUserName = currentUserName,
+                        otherUserName = userName )
                     messageText=""
                 }) {
 
