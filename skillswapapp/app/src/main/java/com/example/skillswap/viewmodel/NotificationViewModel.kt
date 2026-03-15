@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 
 import com.example.skillswap.model.SwapRequestNotification
 
-import com.google.firebase.auth.FirebaseAuth
+import com.example.skillswap.repo.SwapRequestRepository
 
-import com.google.firebase.database.*
+import com.google.firebase.auth.FirebaseAuth
 
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -18,11 +18,15 @@ class NotificationViewModel : ViewModel() {
 
     private val auth = FirebaseAuth.getInstance()
 
-    private val database = FirebaseDatabase.getInstance().getReference("requests")
+    private val repository = SwapRequestRepository()
 
     private val _requests = MutableStateFlow<List<SwapRequestNotification>>(emptyList())
 
     val requests: StateFlow<List<SwapRequestNotification>> = _requests.asStateFlow()
+
+    private var receivedRequests: List<SwapRequestNotification> = emptyList()
+
+    private var sentRequests: List<SwapRequestNotification> = emptyList()
 
     init {
 
@@ -30,52 +34,47 @@ class NotificationViewModel : ViewModel() {
 
     }
 
-
     private fun listenForRequests() {
 
         val currentUserId = auth.currentUser?.uid ?: return
 
-        database.orderByChild("receiverId").equalTo(currentUserId)
+        // listen incoming requests
 
-            .addValueEventListener(object : ValueEventListener {
+        repository.listenRequests(currentUserId) { received ->
 
-                override fun onDataChange(snapshot: DataSnapshot) {
+            receivedRequests = received
 
-                    val requestList = mutableListOf<SwapRequestNotification>()
+            updateList()
 
-                    for (child in snapshot.children) {
+        }
 
-                        val request = child.getValue(SwapRequestNotification::class.java)
+        // listen sent requests
 
-                        if (request != null) {
+        repository.listenSentRequests(currentUserId) { sent ->
 
-                            requestList.add(request)
+            sentRequests = sent
 
-                        }
+            updateList()
 
-                    }
+        }
 
-                    _requests.value = requestList
+    }
 
-                }
+    private fun updateList() {
 
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-
-            })
+        _requests.value = receivedRequests + sentRequests
 
     }
 
     fun acceptRequest(requestId: String) {
 
-        database.child(requestId).child("status").setValue("accepted")
+        repository.acceptRequest(requestId) {}
 
     }
 
     fun declineRequest(requestId: String) {
 
-        database.child(requestId).removeValue()
+        repository.deleteRequest(requestId) {}
 
     }
 

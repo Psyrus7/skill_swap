@@ -217,9 +217,27 @@ fun NotificationsListScreen(
 
                         Column(modifier = Modifier.weight(1f)) {
 
+                            val currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().uid
+
+                            val message = when {
+
+                                request.receiverId == currentUserId && request.status == "pending" ->
+
+                                    "${request.senderName} sent you a skill swap request"
+
+                                request.senderId == currentUserId && request.status == "accepted" ->
+
+                                    "${request.receiverName} accepted your skill swap request"
+
+                                else ->
+
+                                    "Skill swap update"
+
+                            }
+
                             Text(
 
-                                text = "${request.senderName} sent you a skill swap request",
+                                text = message,
 
                                 color = TextPrimary,
 
@@ -240,6 +258,7 @@ fun NotificationsListScreen(
                             )
 
                         }
+
 
                     }
 

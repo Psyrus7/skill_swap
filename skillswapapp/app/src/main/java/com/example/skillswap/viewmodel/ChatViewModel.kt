@@ -34,8 +34,13 @@ class ChatViewModel : ViewModel() {
             senderId = senderId,
             text = text
         )
-        repository.sendMessage(message, currentUserName, otherUserName)
-    }
+        repository.sendMessage(
+            message,
+            currentUserName,
+            otherUserName,
+            currentUserProfile = "",
+            otherUserProfile = ""
+        )    }
 }
 
 

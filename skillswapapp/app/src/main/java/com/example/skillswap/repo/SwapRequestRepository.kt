@@ -1,6 +1,5 @@
 package com.example.skillswap.repo
 
-
 import com.example.skillswap.model.SwapRequestNotification
 
 import com.google.firebase.database.*
@@ -53,17 +52,55 @@ class SwapRequestRepository {
 
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-
-                }
+                override fun onCancelled(error: DatabaseError) {}
 
             })
 
     }
 
-    fun deleteRequest(requestId: String, onComplete: (Boolean) -> Unit) {
+    // 🔔 Listener for sender to know request was accepted
 
-        db.child(requestId).removeValue()
+    fun listenSentRequests(
+
+        senderId: String,
+
+        onUpdate: (List<SwapRequestNotification>) -> Unit
+
+    ) {
+
+        db.orderByChild("senderId").equalTo(senderId)
+
+            .addValueEventListener(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                    val list = mutableListOf<SwapRequestNotification>()
+
+                    for (child in snapshot.children) {
+
+                        val item = child.getValue(SwapRequestNotification::class.java)
+
+                        if (item != null) {
+
+                            list.add(item)
+
+                        }
+
+                    }
+
+                    onUpdate(list)
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+
+            })
+
+    }
+
+    fun acceptRequest(requestId: String, onComplete: (Boolean) -> Unit) {
+
+        db.child(requestId).child("status").setValue("accepted")
 
             .addOnCompleteListener { task ->
 
@@ -73,9 +110,9 @@ class SwapRequestRepository {
 
     }
 
-    fun acceptRequest(requestId: String, onComplete: (Boolean) -> Unit) {
+    fun deleteRequest(requestId: String, onComplete: (Boolean) -> Unit) {
 
-        db.child(requestId).child("status").setValue("accepted")
+        db.child(requestId).removeValue()
 
             .addOnCompleteListener { task ->
 

@@ -16,13 +16,15 @@ class ChatRepository {
 
         message: ChatMessage,
 
-        currentUserName: String = "",
+        currentUserName: String,
 
-        otherUserName: String = ""
+        otherUserName: String,
+
+        currentUserProfile: String = "",
+
+        otherUserProfile: String = ""
 
     ) {
-
-        val docRef = db.collection("messages").document()
 
         val messageData = hashMapOf(
 
@@ -36,11 +38,15 @@ class ChatRepository {
 
         )
 
-        docRef.set(messageData)
+        db.collection("messages")
+
+            .add(messageData)
 
         val participants = message.conversationId.split("_")
 
         if (participants.size != 2) return
+
+        val otherUserId = participants.first { it != message.senderId }
 
         db.collection("conversations")
 
@@ -60,7 +66,15 @@ class ChatRepository {
 
                         message.senderId to currentUserName,
 
-                        participants.first { it != message.senderId } to otherUserName
+                        otherUserId to otherUserName
+
+                    ),
+
+                    "userProfiles" to mapOf(
+
+                        message.senderId to currentUserProfile,
+
+                        otherUserId to otherUserProfile
 
                     )
 
