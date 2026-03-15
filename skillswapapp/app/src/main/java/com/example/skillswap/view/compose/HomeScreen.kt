@@ -388,7 +388,6 @@ fun SkillUserCard(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
@@ -398,7 +397,6 @@ fun SkillUserCard(
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -419,17 +417,13 @@ fun SkillUserCard(
                     Spacer(modifier = Modifier.width(4.dp))
                 }
             }
-
             Spacer(modifier = Modifier.height(12.dp))
-
             Text(
                 text = "Wants to learn",
                 color = CardTitle,
                 style = MaterialTheme.typography.titleSmall
             )
-
             Spacer(modifier = Modifier.height(8.dp))
-
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)

@@ -87,7 +87,6 @@ fun formatTime(date: Date?): String {
     return sdf.format(date)
 }
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
 
 fun MessageScreen(
@@ -108,192 +107,99 @@ fun MessageScreen(
         viewModel.listenMessages(conversationId)
     }
     Scaffold(
-
         containerColor = BeigeBackground,
-
         bottomBar = {
-
             SkillSwapBottomBar(navController = navController)
-
         }
-
     ) { innerPadding ->
-
         Column(
-
             modifier = Modifier
-
                 .fillMaxSize()
-
                 .padding(innerPadding)
-
         ) {
-
             TopAppBar(
-
                 title = {
-
                     Row(
-
                         verticalAlignment = Alignment.CenterVertically,
-
                         modifier = Modifier.fillMaxWidth()
-
                     ) {
-
                         TextButton(onClick = { navController.popBackStack() }) {
-
                             Icon(
-
                                 Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-
                                 contentDescription = "Back"
-
                             )
-
                         }
-
                         Image(
-
                             painter = painterResource(R.drawable.ic_launcher_background),
-
                             contentDescription = "Profile Picture",
-
                             modifier = Modifier
-
                                 .padding(start = 8.dp)
-
                                 .clip(CircleShape)
-
                                 .size(40.dp)
-
                         )
-
                         Column(
-
                             modifier = Modifier.padding(start = 12.dp)
-
                         ) {
-
                             Text(
-
                                 userName,
-
                                 fontWeight = FontWeight.Bold,
-
                                 style = MaterialTheme.typography.titleLarge
-
                             )
-
                             Text("Online", style = MaterialTheme.typography.bodySmall)
-
                         }
-
                         Spacer(modifier = Modifier.weight(1f))
-
-                        // VIDEO CALL BUTTON
-
                         TextButton(
-
                             onClick = {
-
                                 val intent = Intent(
-
                                     Intent.ACTION_VIEW,
-
                                     Uri.parse("https://meet.google.com/new")
-
                                 )
-
                                 context.startActivity(intent)
-
                             }
-
                         ) {
-
                             Icon(
-
                                 painter = painterResource(R.drawable.videocallicon),
-
                                 contentDescription = "Video Call"
-
                             )
-
                         }
-
                         Spacer(modifier = Modifier.width(16.dp))
-
                         TextButton(onClick = {}) {
-
                             Icon(
-
                                 Icons.Outlined.Call,
-
                                 contentDescription = "Call",
-
                                 )
-
                         }
-
                     }
-
                 }
-
             )
-
             LazyColumn(
                 modifier = Modifier
-
                     .weight(1f)
-
                     .padding(8.dp)
-
                     .background(BeigeBackground)
-
             ) {
-
                 items(messages) { message ->
                     val isUser = message.senderId==currentUserId
                     MessageBubble(
-
                         text = message.text,
-
                         time = formatTime(message.timestamp),
-
                         isUser = isUser
-
                     )
-
                 }
-
             }
-
             Row(
-
                 modifier = Modifier
-
                     .fillMaxWidth()
-
                     .background(Color.White)
-
                     .padding(8.dp),
-
                 verticalAlignment = Alignment.CenterVertically
-
             ) {
-
                 TextField(
-
                     value = messageText,
-
                     onValueChange = {messageText=it},
-
                     placeholder = { Text("Type a message...") },
-
                     modifier = Modifier.weight(1f)
-
                 )
-
                 IconButton(onClick = {
                     val senderId = FirebaseAuth.getInstance().uid?:
                     return@IconButton
@@ -305,72 +211,39 @@ fun MessageScreen(
                         otherUserName = userName )
                     messageText=""
                 }) {
-
                     Icon(
-
                         Icons.AutoMirrored.Filled.Send,
-
                         contentDescription = "Send"
-
                     )
-
                 }
-
             }
-
         }
-
     }
-
 }
 
 @Composable
-
 fun MessageBubble(text: String, time: String, isUser: Boolean) {
-
     Column(
-
         horizontalAlignment = if (isUser) Alignment.End else Alignment.Start,
-
         modifier = Modifier
-
             .fillMaxWidth()
-
             .padding(8.dp)
-
     ) {
-
         Box(
-
             modifier = Modifier
-
                 .background(
-
                     if (isUser) SoftBeigeCard else Color.White,
-
                     shape = RoundedCornerShape(12.dp)
-
                 )
-
                 .padding(12.dp)
-
         ) {
-
             Text(text, style = MaterialTheme.typography.bodyMedium)
-
         }
-
         Text(
-
             text = time,
-
             style = MaterialTheme.typography.bodySmall,
-
             modifier = Modifier.padding(4.dp)
-
         )
-
     }
-
 }
 

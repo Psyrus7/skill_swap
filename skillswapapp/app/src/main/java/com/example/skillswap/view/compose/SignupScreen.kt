@@ -324,19 +324,12 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel(),navController: NavCont
                 )
             }
             LaunchedEffect(state.isSuccess) {
-
                 if (state.isSuccess) {
-
                     navController.navigate("loginScreen") {
-
                     }
-
                     Log.d("Login Success", "Navigating to Home")
-
                 }
-
             }
-
             Spacer(Modifier.height(12.dp))
             Row {
                 Text(

@@ -92,59 +92,34 @@ import com.google.firebase.database.FirebaseDatabase
 class MatchedScreenCardActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
-
         setContent {
-
             MaterialTheme {
-
                 Scaffold(
-
                     containerColor = BeigeBackground
-
                 ) { innerPadding ->
-
                     Box(
-
                         modifier = Modifier
-
                             .fillMaxSize()
-
                             .padding(innerPadding)
-
                     ) {
-
                     }
-
                 }
-
             }
-
         }
-
     }
-
 }
 
 @Composable
 
 fun MatchedScreenCard(
-
     navController: NavController,
-
     name: String = "Sample Name",
-
     receiverId: String,
-
     onSendRequest: () -> Unit = {},
-
     onMessage: () -> Unit = {
-
         navController.navigate("chatScreen")
-
     }
 
 ) {

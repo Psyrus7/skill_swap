@@ -71,164 +71,85 @@ import com.example.skillswap.ui.theme.TextSecondary
 import com.example.skillswap.view.compose.SkillSwapBottomBar
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
-
 fun EmptyNotificationsScreen(
-
     navController: NavController
-
 ) {
-
     Scaffold(
-
         topBar = {
-
             CenterAlignedTopAppBar(
-
                 title = {
-
                     Text(
-
                         text = "Notifications",
-
                         color = TextPrimary
-
                     )
-
                 },
-
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-
                     containerColor = BeigeBackground,
-
                     titleContentColor = TextPrimary
-
                 )
-
             )
-
         },
-
         bottomBar = {
-
             SkillSwapBottomBar(navController = navController)
-
         },
-
         containerColor = BeigeBackground
-
     ) { padding ->
-
         Column(
-
             modifier = Modifier
-
                 .padding(padding)
-
                 .fillMaxSize()
-
                 .padding(horizontal = 24.dp),
-
             horizontalAlignment = Alignment.CenterHorizontally,
-
             verticalArrangement = Arrangement.Center
-
         ) {
-
             /* ---------- Empty Illustration Box ---------- */
-
             Surface(
-
                 modifier = Modifier.size(140.dp),
-
                 color = CreamSurface,
-
                 shape = RoundedCornerShape(24.dp)
-
             ) {}
-
             Spacer(modifier = Modifier.height(24.dp))
-
             /* ---------- Title ---------- */
-
             Text(
-
                 text = "No Notification to show",
-
                 color = TextSecondary,
-
                 style = MaterialTheme.typography.titleMedium,
-
                 fontWeight = FontWeight.SemiBold
-
             )
-
             Spacer(modifier = Modifier.height(8.dp))
-
             /* ---------- Description ---------- */
-
             Text(
-
                 text = "You currently have no notifications. We will notify you when something new happens!",
-
                 color = TextHint,
-
                 textAlign = TextAlign.Center
-
             )
-
             Spacer(modifier = Modifier.height(24.dp))
-
             /* ---------- Explore Button ---------- */
-
             Button(
-
                 onClick = {
-
                     navController.navigate("homeScreen") {
-
                         popUpTo("notificationScreen") { inclusive = true }
-
                     }
-
                 },
-
                 colors = ButtonDefaults.buttonColors(
-
                     containerColor = ButtonPrimary,
-
                     contentColor = Color.White
-
                 ),
-
                 shape = RoundedCornerShape(12.dp)
-
             ) {
-
                 Text("Explore")
-
             }
-
         }
-
     }
-
 }
 
 @Preview(showBackground = true)
-
 @Composable
-
 private fun PreviewEmptyNotifications() {
-
     val navController = rememberNavController()
-
     SkillSwapTheme {
-
         EmptyNotificationsScreen(navController)
-
     }
-
 }
  

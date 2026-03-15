@@ -13,28 +13,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class MessagesViewModel : ViewModel() {
-
     private val repository = MessagesRepository()
-
-    private val _conversations =
-
-        MutableStateFlow<List<Conversation>>(emptyList())
-
-    val conversations: StateFlow<List<Conversation>> =
-
-        _conversations
+    private val _conversations = MutableStateFlow<List<Conversation>>(emptyList())
+    val conversations: StateFlow<List<Conversation>> = _conversations
 
     init {
-
         val userId = FirebaseAuth.getInstance().uid?:""
-
         repository.listenConversations(userId) {
-
             _conversations.value = it
-
         }
-
     }
-
 }
 

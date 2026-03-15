@@ -1,7 +1,3 @@
-
-
-
-
 package com.example.skillswap.viewmodel
 
 import androidx.lifecycle.ViewModel
@@ -10,11 +6,9 @@ import com.example.skillswap.repo.SignupRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-
 class SignupViewModel(
     private val repository: SignupRepository = SignupRepository()
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(Signup())
     val uiState: StateFlow<Signup> = _uiState
 

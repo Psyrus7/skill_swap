@@ -97,8 +97,6 @@ fun MessagesListScreen(
 
         ) {
 
-            /* ---------------- TOP BAR ---------------- */
-
             CenterAlignedTopAppBar(
 
                 title = {

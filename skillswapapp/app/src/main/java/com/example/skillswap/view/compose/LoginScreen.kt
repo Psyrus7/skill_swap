@@ -87,407 +87,206 @@ import com.example.skillswap.viewmodel.LoginViewModel
 fun LoginScreen(viewModel: LoginViewModel = viewModel(), navController: NavController) {
 
     val state by viewModel.state.collectAsState()
-
     var errorInEmail by rememberSaveable { mutableStateOf(false) }
-
     var errorInPassword by rememberSaveable { mutableStateOf(false) }
-
     val context = LocalContext.current
-
     Column(
-
         modifier = Modifier
-
             .fillMaxSize()
-
             .background(
-
                 Brush.verticalGradient(
-
                     colors = listOf(BeigeBackground, CreamSurface)
-
                 )
-
             )
-
             .padding(24.dp)
-
     ) {
-
         Row(
-
             verticalAlignment = Alignment.CenterVertically,
-
             modifier = Modifier.clickable { }
-
         ) {
-
             Icon(
-
                 painter = painterResource(R.drawable.outline_arrow_back_24),
-
                 contentDescription = "Back Button",
-
                 modifier = Modifier.clickable(onClick = {
-
                     navController.navigate("signupAndLoginScreen")
-
                 })
-
             )
-
         }
-
         Spacer(modifier = Modifier.height(60.dp))
-
         Column(
-
             horizontalAlignment = Alignment.CenterHorizontally,
-
             modifier = Modifier.fillMaxWidth()
-
         ) {
-
             Box(
-
                 modifier = Modifier
-
                     .size(70.dp)
-
                     .clip(CircleShape)
-
                     .background(BrownPrimary)
-
                     .border(2.dp, GoldAccent, CircleShape),
-
                 contentAlignment = Alignment.Center
-
             ) {
-
                 Icon(
-
                     imageVector = Icons.Default.AccountCircle,
-
                     contentDescription = null,
-
                     modifier = Modifier.size(34.dp),
-
                     tint = Color.White
-
                 )
-
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Text(
-
                 text = "Welcome Back",
-
                 fontSize = 26.sp,
-
                 fontWeight = FontWeight.Bold,
-
                 color = TitleText,
-
                 fontFamily = Poppins
-
             )
-
             Spacer(modifier = Modifier.height(4.dp))
-
             Text(
-
                 text = "Log in to your account",
-
                 color = TextSecondary,
-
                 fontFamily = DmSans
-
             )
-
         }
-
         Spacer(modifier = Modifier.height(40.dp))
-
         Text(
-
             text = "Email",
-
             color = TextPrimary,
-
             fontFamily = Poppins,
-
             fontWeight = FontWeight.SemiBold
-
         )
-
         Spacer(modifier = Modifier.height(6.dp))
-
         OutlinedTextField(
-
             value = state.email,
-
             onValueChange = {
-
                 viewModel.updateEmail(it)
-
                 errorInEmail = false
-
             },
-
             placeholder = {
-
                 Text(
-
                     "Enter your email",
-
                     color = TextHint,
-
                     fontFamily = DmSans
-
                 )
-
             },
-
             isError = errorInEmail,
-
             label = {
-
                 Text(
-
                     if (errorInEmail) "Invalid Email" else ""
-
                 )
-
             },
-
             modifier = Modifier.fillMaxWidth(),
-
             shape = RoundedCornerShape(14.dp),
-
             singleLine = true,
-
             colors = OutlinedTextFieldDefaults.colors(
-
                 focusedContainerColor = SearchBackground,
-
                 unfocusedContainerColor = SearchBackground,
-
                 focusedBorderColor = GoldAccent,
-
                 unfocusedBorderColor = SearchBorder,
-
                 cursorColor = BrownPrimary
-
             )
-
         )
-
         Spacer(modifier = Modifier.height(18.dp))
-
         Text(
-
             text = "Password",
-
             color = TextPrimary,
-
             fontFamily = Poppins,
-
             fontWeight = FontWeight.SemiBold
-
         )
-
         Spacer(modifier = Modifier.height(6.dp))
-
         OutlinedTextField(
-
             value = state.password,
-
             onValueChange = {
-
                 viewModel.updatePassword(it)
-
                 errorInPassword = false
-
             },
-
             placeholder = {
-
                 Text(
-
                     "Enter your password",
-
                     color = TextHint,
-
                     fontFamily = DmSans
-
                 )
-
             },
-
             visualTransformation = PasswordVisualTransformation(),
-
             isError = errorInPassword,
-
             label = {
-
                 Text(
-
                     if (errorInPassword) "Password must be at least 6 characters" else ""
-
                 )
-
             },
-
             modifier = Modifier.fillMaxWidth(),
-
             shape = RoundedCornerShape(14.dp),
-
             singleLine = true,
-
             colors = OutlinedTextFieldDefaults.colors(
-
                 focusedContainerColor = SearchBackground,
-
                 unfocusedContainerColor = SearchBackground,
-
                 focusedBorderColor = GoldAccent,
-
                 unfocusedBorderColor = SearchBorder,
-
                 cursorColor = BrownPrimary
-
             )
-
         )
-
         Spacer(modifier = Modifier.height(30.dp))
-
         Button(
-
             onClick = {
-
                 errorInEmail = !android.util.Patterns.EMAIL_ADDRESS.matcher(state.email).matches()
-
                 errorInPassword = state.password.length < 6
-
                 if (!errorInEmail && !errorInPassword) {
-
                     viewModel.login()
-
                 }
-
             },
-
             modifier = Modifier
-
                 .fillMaxWidth()
-
                 .height(54.dp),
-
             colors = ButtonDefaults.buttonColors(
-
                 containerColor = BrownPrimary
-
             ),
-
             shape = RoundedCornerShape(16.dp),
-
             elevation = ButtonDefaults.buttonElevation(
-
                 defaultElevation = 6.dp
-
             )
-
         ) {
-
             Text(
-
                 text = "Log In",
-
                 color = Color.White,
-
                 fontSize = 16.sp,
-
                 fontFamily = Poppins,
-
                 fontWeight = FontWeight.SemiBold
-
             )
-
         }
-
         LaunchedEffect(state.isSuccess, state.error) {
-
             if (state.isSuccess) {
-
                 navController.navigate("homeScreen") {
-
                     popUpTo("loginScreen") { inclusive = true }
-
                 }
-
                 Log.d("Login Success", "Navigating to Home")
-
             }
-
             if (!state.error.isNullOrEmpty()) {
-
                 errorInEmail = true
-
                 errorInPassword = true
-
                 Toast.makeText(context, "Invalid email or password", Toast.LENGTH_SHORT).show()
-
             }
-
         }
-
         Spacer(modifier = Modifier.height(22.dp))
-
         Row(
-
             modifier = Modifier.fillMaxWidth(),
-
             horizontalArrangement = Arrangement.Center
-
         ) {
-
             Text(
-
                 text = "Don't have an account?",
-
                 color = TextSecondary,
-
                 fontFamily = DmSans
-
             )
-
             Spacer(modifier = Modifier.width(4.dp))
-
             Text(
-
                 text = "Sign up",
-
                 color = BrownPrimary,
-
                 fontWeight = FontWeight.Bold,
-
                 fontFamily = Poppins,
-
                 modifier = Modifier.clickable {
-
                     navController.navigate("signupScreen")
-
                 }
-
             )
-
         }
-
     }
-
 }
 
 @Preview(showBackground = true)
