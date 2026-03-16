@@ -16,14 +16,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 class HomeScreenViewModel(
-    private val repository: UserRepository = UserRepository()
-) : ViewModel() {
-
+    private val repository: UserRepository = UserRepository()) : ViewModel() {
     private val _searchText = MutableStateFlow("")
     val searchText: StateFlow<String> = _searchText
 
-    private val _selectedNavIndex = MutableStateFlow(0)
-    val selectedNavIndex: StateFlow<Int> = _selectedNavIndex
+//    private val _selectedNavIndex = MutableStateFlow(0)
+//    val selectedNavIndex: StateFlow<Int> = _selectedNavIndex
 
     private val _users = MutableStateFlow<List<SkillUser>>(emptyList())
     val users: StateFlow<List<SkillUser>> = _users
@@ -49,7 +47,6 @@ class HomeScreenViewModel(
                 } else {
                         userList
                 }
-                _users.value = userList
             } else {
                 println("Error fetching users: $error")
             }
@@ -60,7 +57,7 @@ class HomeScreenViewModel(
         _searchText.value = value
     }
 
-    fun onNavItemSelected(index: Int) {
-        _selectedNavIndex.value = index
-    }
+//    fun onNavItemSelected(index: Int) {
+//        _selectedNavIndex.value = index
+//    }
 }

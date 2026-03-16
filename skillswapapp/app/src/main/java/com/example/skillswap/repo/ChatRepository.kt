@@ -1,6 +1,7 @@
 package com.example.skillswap.repo
 
 import com.example.skillswap.model.ChatMessage
+import com.google.firebase.auth.FirebaseAuth
 
 import com.google.firebase.firestore.FieldValue
 
@@ -10,6 +11,9 @@ import com.google.firebase.firestore.SetOptions
 
 class ChatRepository {
     private val db = FirebaseFirestore.getInstance()
+    val auth = FirebaseAuth.getInstance()
+    val currentUserId:String? get() = FirebaseAuth.getInstance().uid
+    val currentUserName:String get() = FirebaseAuth.getInstance().currentUser?.displayName?: FirebaseAuth.getInstance().currentUser?.email?:"Unknown User"
     fun sendMessage(
         message: ChatMessage,
         currentUserName: String,

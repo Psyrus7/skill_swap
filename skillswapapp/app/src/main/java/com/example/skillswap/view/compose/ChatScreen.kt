@@ -76,7 +76,6 @@ import com.example.skillswap.ui.theme.SkillSwapTheme
 import com.example.skillswap.ui.theme.SoftBeigeCard
 
 import com.example.skillswap.viewmodel.ChatViewModel
-import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -99,8 +98,6 @@ fun MessageScreen(
 ) {
 
     val messages by viewModel.messages.collectAsState()
-    val currentUserId = FirebaseAuth.getInstance().uid
-    val currentUserName = FirebaseAuth.getInstance().currentUser?.displayName?: FirebaseAuth.getInstance().currentUser?.email?:"Unknown User"
     val context = LocalContext.current
     var messageText by remember { mutableStateOf("") }
     LaunchedEffect(conversationId) {
@@ -179,7 +176,7 @@ fun MessageScreen(
                     .background(BeigeBackground)
             ) {
                 items(messages) { message ->
-                    val isUser = message.senderId==currentUserId
+                    val isUser = message.senderId==viewModel.currentUserId
                     MessageBubble(
                         text = message.text,
                         time = formatTime(message.timestamp),
@@ -201,13 +198,9 @@ fun MessageScreen(
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(onClick = {
-                    val senderId = FirebaseAuth.getInstance().uid?:
-                    return@IconButton
                     viewModel.sendMessage(
                         text = messageText,
                         conversationId = conversationId,
-                        senderId = senderId,
-                        currentUserName = currentUserName,
                         otherUserName = userName )
                     messageText=""
                 }) {
