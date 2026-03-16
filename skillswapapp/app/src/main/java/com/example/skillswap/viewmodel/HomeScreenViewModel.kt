@@ -1,9 +1,11 @@
 package com.example.skillswap.viewmodel
 
+import androidx.compose.runtime.currentRecomposeScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.skillswap.model.SkillUser
 import com.example.skillswap.repo.UserRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -39,8 +41,14 @@ class HomeScreenViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun fetchUsersFromDatabase() {
+        val currentUser = FirebaseAuth.getInstance().currentUser?.uid
         repository.fetchUsers { userList, error ->
             if (error == null) {
+                _users.value = if(currentUser!=null){
+                    userList.filter { it.id != currentUser }
+                } else {
+                        userList
+                }
                 _users.value = userList
             } else {
                 println("Error fetching users: $error")
