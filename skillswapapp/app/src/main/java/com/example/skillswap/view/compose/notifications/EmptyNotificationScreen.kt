@@ -103,14 +103,12 @@ fun EmptyNotificationsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            /* ---------- Empty Illustration Box ---------- */
             Surface(
                 modifier = Modifier.size(140.dp),
                 color = CreamSurface,
                 shape = RoundedCornerShape(24.dp)
             ) {}
             Spacer(modifier = Modifier.height(24.dp))
-            /* ---------- Title ---------- */
             Text(
                 text = "No Notification to show",
                 color = TextSecondary,
@@ -118,14 +116,12 @@ fun EmptyNotificationsScreen(
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.height(8.dp))
-            /* ---------- Description ---------- */
             Text(
                 text = "You currently have no notifications. We will notify you when something new happens!",
                 color = TextHint,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(24.dp))
-            /* ---------- Explore Button ---------- */
             Button(
                 onClick = {
                     navController.navigate("homeScreen") {

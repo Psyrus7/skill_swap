@@ -379,7 +379,6 @@ fun ConversationItem(
 
         }
 
-        /* -------- TIME + UNREAD -------- */
 
         Column(
 
